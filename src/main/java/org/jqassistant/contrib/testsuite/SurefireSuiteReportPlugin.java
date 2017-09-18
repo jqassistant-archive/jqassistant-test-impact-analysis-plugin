@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -15,6 +16,8 @@ import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.*;
 import com.buschmais.jqassistant.core.report.api.ReportException;
 import com.buschmais.jqassistant.core.report.api.ReportPlugin;
+import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
+import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
 
 public class SurefireSuiteReportPlugin implements ReportPlugin {
 
@@ -24,16 +27,20 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
     private static final String PROPERTY_DIRECTORY = "testsuite.report.directory";
     private static final String PROPERTY_ARTIFACT_COLUMN = "testsuite.surefire.artifactColumn";
     private static final String PROPERTY_TESTS_COLUMN = "testsuite.surefire.testsColumn";
+    private static final String PROPERTY_REPORT_FILE = "testsuite.surefire.file";
 
     private static final String DEFAULT_DIRECTORY_DEFAULT = "jqassistant/report/testsuite";
     private static final String DEFAULT_ARTIFACT_COLUMN = "Artifact";
     private static final String DEFAULT_TESTS_COLUMN = "Tests";
+    private static final String DEFAULT_REPORT_FILE = "surefire-tests";
 
     private File reportDirectory;
 
+    @Override
     public void initialize() throws ReportException {
     }
 
+    @Override
     public void configure(Map<String, Object> properties) throws ReportException {
         String directoryName = (String) properties.get(PROPERTY_DIRECTORY);
         this.reportDirectory = directoryName != null ? new File(directoryName) : new File(DEFAULT_DIRECTORY_DEFAULT);
@@ -42,45 +49,55 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
         }
     }
 
+    @Override
     public void begin() throws ReportException {
     }
 
+    @Override
     public void end() throws ReportException {
     }
 
+    @Override
     public void beginConcept(Concept concept) throws ReportException {
     }
 
+    @Override
     public void endConcept() throws ReportException {
     }
 
+    @Override
     public void beginGroup(Group group) throws ReportException {
     }
 
+    @Override
     public void endGroup() throws ReportException {
     }
 
+    @Override
     public void beginConstraint(Constraint constraint) throws ReportException {
     }
 
+    @Override
     public void endConstraint() throws ReportException {
     }
 
+    @Override
     public void setResult(Result<? extends ExecutableRule> result) throws ReportException {
         Report report = result.getRule().getReport();
         if (isTestSuiteReport(report)) {
             Properties properties = report.getProperties();
             String artifactColumn = properties.getProperty(PROPERTY_ARTIFACT_COLUMN, DEFAULT_ARTIFACT_COLUMN);
             String testsColumn = properties.getProperty(PROPERTY_TESTS_COLUMN, DEFAULT_TESTS_COLUMN);
+            Set<File> files = new HashSet<>();
             for (Map<String, Object> row : result.getRows()) {
-                String artifactName = getColumnValue(row, artifactColumn, String.class);
-                Iterable<String> testClasses = getColumnValue(row, testsColumn, Iterable.class);
-                if (artifactName == null) {
-                    LOGGER.warn("Cannot determine artifact from column '" + artifactColumn + "'.");
-                } else if (testClasses == null) {
+                ArtifactDescriptor artifactDescriptor = getColumnValue(row, artifactColumn, ArtifactDescriptor.class);
+                Iterable<ClassTypeDescriptor> testClasses = getColumnValue(row, testsColumn, Iterable.class);
+                File file = getReportFile(properties, artifactDescriptor);
+                if (testClasses == null) {
                     LOGGER.warn("Cannot determine tests from column '" + testsColumn + "'.");
                 } else {
-                    writeTests(artifactName, testClasses);
+                    boolean append = !files.add(file);
+                    writeTests(file, append, testClasses);
                 }
             }
         }
@@ -126,11 +143,39 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
         return expectedType.cast(value);
     }
 
-    private void writeTests(String artifactName, Iterable<String> testClasses) throws ReportException {
-        File file = new File(reportDirectory, artifactName);
-        try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-            for (String testClass : testClasses) {
-                writer.println(testClass.substring(1)); // strip leading slash
+    private File getReportFile(Properties properties, ArtifactDescriptor artifactDescriptor) {
+        File file;
+        if (artifactDescriptor != null) {
+            file = new File(reportDirectory, artifactDescriptor.getName());
+        } else {
+            file = new File(reportDirectory, properties.getProperty(PROPERTY_REPORT_FILE, DEFAULT_REPORT_FILE));
+            LOGGER.info("Result does not contain artifact column, writing tests to '" + file.getPath() + "'.");
+        }
+        return file;
+    }
+
+    /**
+     * Writes test classes to the given file.
+     * 
+     * @param file
+     *            The file.
+     * @param append
+     *            If <code>true</code> the test classes will be appended if the file
+     *            already exists.
+     * @param testClasses
+     *            The test classes.
+     * @throws ReportException
+     *             If the file cannot be written.
+     */
+    private void writeTests(File file, boolean append, Iterable<ClassTypeDescriptor> testClasses) throws ReportException {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file), append)) {
+            for (ClassTypeDescriptor testClass : testClasses) {
+                String sourceFileName = testClass.getSourceFileName();
+                String name = testClass.getName();
+                String fullQualifiedName = testClass.getFullQualifiedName();
+                String packageName = fullQualifiedName.substring(0, fullQualifiedName.length() - name.length());
+                String fullSourceName = packageName.replace('.', '/') + sourceFileName;
+                writer.println(fullSourceName);
             }
         } catch (IOException e) {
             throw new ReportException("Cannot write tests to '" + file.getAbsolutePath() + "'");

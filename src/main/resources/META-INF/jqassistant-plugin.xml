@@ -2,7 +2,7 @@
                                name="TestSuite">
     <description>Test Suite Rules And Reports</description>
     <rules>
-        <resource>testsuite-git.xml</resource>
+        <resource>testsuite.xml</resource>
     </rules>
     <report>
         <class id="surefire-suite">org.jqassistant.contrib.testsuite.SurefireSuiteReportPlugin</class>

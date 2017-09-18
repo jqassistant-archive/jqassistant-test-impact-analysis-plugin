@@ -1,6 +1,6 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.3">
 
-    <concept id="testsuite-git:CurrentBranch">
+    <concept id="testsuite:CurrentGitBranch">
         <description></description>
         <cypher><![CDATA[
             MATCH
@@ -18,8 +18,8 @@
         ]]></cypher>
     </concept>
 
-    <concept id="testsuite-git:SurefireSuiteForLastCommit">
-        <requiresConcept refId="testsuite-git:CurrentBranch" />
+    <concept id="testsuite:TestAffectByLastGitCommit">
+        <requiresConcept refId="testsuite:CurrentGitBranch" />
         <requiresConcept refId="junit4:TestClass" />
         <description></description>
         <cypher><![CDATA[
@@ -41,12 +41,26 @@
               (type:Type)-[:EXTENDS|IMPLEMENTS*0..]->(abstractType)<-[:CONTAINS]-(:Artifact)
             WHERE NOT
               (has(test.abstract) and test.abstract)
+            SET
+              test:Affected
             RETURN
-              artifact.name as Artifact, collect(testPackage.fileName + "/" + test.sourceFileName) as Tests
+              artifact as Artifact, collect(test) as Tests
+            ORDER BY
+              Artifact
+        ]]></cypher>
+    </concept>
+
+    <concept id="testsuite:SurefireSuiteForLastGitCommit">
+        <requiresConcept refId="testsuite:TestAffectByLastGitCommit" />
+        <description></description>
+        <cypher><![CDATA[
+            MATCH
+              (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
+            RETURN
+              artifact as Artifact, collect(test) as Tests
             ORDER BY
               Artifact
         ]]></cypher>
         <report type="surefire-suite" />
     </concept>
-
 </jqa:jqassistant-rules>
