@@ -1,7 +1,7 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.3">
 
     <concept id="testsuite:CurrentGitBranch">
-        <description></description>
+        <description>Determines the Git current branch and adds a label "Current".</description>
         <cypher><![CDATA[
             MATCH
               (repository:Repository)-[:HAS_BRANCH]->(branch:Git:Branch)
@@ -18,10 +18,10 @@
         ]]></cypher>
     </concept>
 
-    <concept id="testsuite:TestAffectByLastGitCommit">
+    <concept id="testsuite:TestAffectedByLastGitCommit">
         <requiresConcept refId="testsuite:CurrentGitBranch" />
         <requiresConcept refId="junit4:TestClass" />
-        <description></description>
+        <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed in the last Git commit.</description>
         <cypher><![CDATA[
             MATCH
               (:Branch:Current)-[:HAS_HEAD]->(:Commit)-[:CONTAINS_CHANGE]->()-[:MODIFIES]->(sourceFile:File)
@@ -51,8 +51,66 @@
     </concept>
 
     <concept id="testsuite:SurefireSuiteForLastGitCommit">
-        <requiresConcept refId="testsuite:TestAffectByLastGitCommit" />
+        <requiresConcept refId="testsuite:TestAffectedByLastGitCommit" />
+        <description>Reports all test classes affected by the last Git commit.</description>
+        <cypher><![CDATA[
+            MATCH
+              (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
+            RETURN
+              artifact as Artifact, collect(test) as Tests
+            ORDER BY
+              Artifact
+        ]]></cypher>
+        <report type="surefire-suite" />
+    </concept>
+
+    <concept id="testsuite:TestAffectedByCurrentBranch">
+        <requiresConcept refId="testsuite:CurrentGitBranch" />
+        <requiresConcept refId="junit4:TestClass" />
         <description></description>
+        <cypher><![CDATA[
+            MATCH
+              (b:Branch:Current)-[:HAS_HEAD]->(head:Commit),
+              p=shortestPath((head)-[:HAS_PARENT*]->(first:Commit)),
+              (first)-[:HAS_PARENT]->(split:Commit)<-[:HAS_PARENT]-(other:Commit)
+            WHERE
+              first <> other
+            WITH
+              p
+            LIMIT
+              1
+            UNWIND
+              nodes(p) as commit
+            MATCH
+              (commit)-[:CONTAINS_CHANGE]->()-[:MODIFIES]->(sourceFile:File)
+            WHERE
+              sourceFile.relativePath ends with ".java"
+            WITH
+              sourceFile
+            MATCH
+              (artifact:Artifact)-[:CONTAINS]->(package:Package)-[:CONTAINS]->(type:Type)
+            WHERE
+              sourceFile.relativePath ends with (package.fileName + "/" + type.sourceFileName)
+            WITH
+              artifact, type
+            MATCH
+              (testPackage:Package)-[:CONTAINS]->(test:Class),
+              (test)-[:EXTENDS|IMPLEMENTS*0..]->(:Test:Class)-[:DEPENDS_ON*0..1]->(abstractType:Type),
+              (type:Type)-[:EXTENDS|IMPLEMENTS*0..]->(abstractType)<-[:CONTAINS]-(:Artifact)
+            WHERE NOT
+              (has(test.abstract) and test.abstract)
+            SET
+              test:Affected
+            RETURN
+              artifact as Artifact, collect(test) as Tests
+            ORDER BY
+              Artifact
+        ]]></cypher>
+    </concept>
+
+    <concept id="testsuite:SurefireSuiteForCurrentBranch">
+        <requiresConcept refId="testsuite:TestAffectedByCurrentBranch" />
+        <description>Reports all test classes affected by Git commits in the current branch.</description>
         <cypher><![CDATA[
             MATCH
               (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
