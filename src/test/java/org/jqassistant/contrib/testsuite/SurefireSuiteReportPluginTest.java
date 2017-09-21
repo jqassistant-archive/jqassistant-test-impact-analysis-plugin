@@ -12,9 +12,11 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.*;
 
+import org.apache.commons.io.FileUtils;
 import org.jqassistant.contrib.testsuite.set.Artifact1Test1;
 import org.jqassistant.contrib.testsuite.set.Artifact1Test2;
 import org.jqassistant.contrib.testsuite.set.Artifact2Test1;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -30,7 +32,14 @@ import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
 @RunWith(MockitoJUnitRunner.class)
 public class SurefireSuiteReportPluginTest {
 
+    private static final File REPORT_DIRECTORY = new File("target/testsuite");
+
     private SurefireSuiteReportPlugin plugin = new SurefireSuiteReportPlugin();
+
+    @Before
+    public void init() throws IOException {
+        FileUtils.deleteDirectory(REPORT_DIRECTORY);
+    }
 
     @Test
     public void testsPerArtifact() throws ReportException, IOException {
@@ -38,16 +47,15 @@ public class SurefireSuiteReportPluginTest {
         rows.add(createRow("Artifact", "artifact1", "Tests", Artifact1Test1.class, Artifact1Test2.class));
         rows.add(createRow("Artifact", "artifact2", "Tests", Artifact2Test1.class));
         Result<? extends ExecutableRule> result = getResult(rows, new Properties());
-        File reportDirectory = new File("target/testsuite");
-        configure(reportDirectory);
+        plugin.configure(getConfiguration());
 
         plugin.setResult(result);
 
-        List<String> artifact1Testsuite = getTestsuiteReport(reportDirectory, "artifact1");
+        List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "artifact1");
         assertThat(artifact1Testsuite.size(), equalTo(2));
         assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
         assertThat(artifact1Testsuite.get(1), equalTo(getExpectedSourceFileName(Artifact1Test2.class)));
-        List<String> artifact2Testsuite = getTestsuiteReport(reportDirectory, "artifact2");
+        List<String> artifact2Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "artifact2");
         assertThat(artifact2Testsuite.size(), equalTo(1));
         assertThat(artifact2Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact2Test1.class)));
     }
@@ -57,15 +65,15 @@ public class SurefireSuiteReportPluginTest {
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(createRow("a", "artifact", "t", Artifact1Test1.class));
         Properties reportProperties = new Properties();
-        reportProperties.setProperty("testsuite.surefire.artifactColumn", "a");
-        reportProperties.setProperty("testsuite.surefire.testsColumn", "t");
         Result<? extends ExecutableRule> result = getResult(rows, reportProperties);
-        File reportDirectory = new File("target/testsuite");
-        configure(reportDirectory);
+        Map<String, Object> configuration = getConfiguration();
+        configuration.put("testsuite.surefire.artifactColumn", "a");
+        configuration.put("testsuite.surefire.testsColumn", "t");
+        plugin.configure(configuration);
 
         plugin.setResult(result);
 
-        List<String> artifact1Testsuite = getTestsuiteReport(reportDirectory, "artifact");
+        List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "artifact");
         assertThat(artifact1Testsuite.size(), equalTo(1));
         assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
     }
@@ -75,12 +83,11 @@ public class SurefireSuiteReportPluginTest {
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(createRow(null, null, "Tests", Artifact1Test1.class, Artifact1Test2.class, Artifact2Test1.class));
         Result<? extends ExecutableRule> result = getResult(rows, new Properties());
-        File reportDirectory = new File("target/testsuite");
-        configure(reportDirectory);
+        plugin.configure(getConfiguration());
 
         plugin.setResult(result);
 
-        List<String> artifact1Testsuite = getTestsuiteReport(reportDirectory, "surefire-tests");
+        List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "surefire-tests");
         assertThat(artifact1Testsuite.size(), equalTo(3));
         assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
         assertThat(artifact1Testsuite.get(1), equalTo(getExpectedSourceFileName(Artifact1Test2.class)));
@@ -88,18 +95,18 @@ public class SurefireSuiteReportPluginTest {
     }
 
     @Test
-    public void withoutCustomArtifact() throws ReportException, IOException {
+    public void reportFile() throws ReportException, IOException {
         List<Map<String, Object>> rows = new ArrayList<>();
-        rows.add(createRow(null, null, "Tests", Artifact1Test1.class, Artifact1Test2.class, Artifact2Test1.class));
+        rows.add(createRow("Artifact", "artifact1", "Tests", Artifact1Test1.class, Artifact1Test2.class, Artifact2Test1.class));
         Properties reportProperties = new Properties();
-        reportProperties.setProperty("testsuite.surefire.file", "tests");
         Result<? extends ExecutableRule> result = getResult(rows, reportProperties);
-        File reportDirectory = new File("target/testsuite");
-        configure(reportDirectory);
+        Map<String, Object> configuration = getConfiguration();
+        configuration.put("testsuite.surefire.file", "tests");
+        plugin.configure(configuration);
 
         plugin.setResult(result);
 
-        List<String> artifact1Testsuite = getTestsuiteReport(reportDirectory, "tests");
+        List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "tests");
         assertThat(artifact1Testsuite.size(), equalTo(3));
         assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
         assertThat(artifact1Testsuite.get(1), equalTo(getExpectedSourceFileName(Artifact1Test2.class)));
@@ -138,20 +145,21 @@ public class SurefireSuiteReportPluginTest {
         return result;
     }
 
-    private void configure(File reportDirectory) throws ReportException {
+    private Map<String, Object> getConfiguration() throws ReportException {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("testsuite.report.directory", reportDirectory.getAbsolutePath());
-        plugin.configure(properties);
+        properties.put("testsuite.report.directory", REPORT_DIRECTORY.getAbsolutePath());
+        return properties;
     }
 
     private List<String> getTestsuiteReport(File reportDirectory, String fileName) throws IOException {
         File testArtifactSuite = new File(reportDirectory, fileName);
         assertThat(testArtifactSuite.exists(), equalTo(true));
-        LineNumberReader reader = new LineNumberReader(new FileReader(testArtifactSuite));
         List<String> testsuite = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            testsuite.add(line);
+        try (LineNumberReader reader = new LineNumberReader(new FileReader(testArtifactSuite))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                testsuite.add(line);
+            }
         }
         return testsuite;
     }

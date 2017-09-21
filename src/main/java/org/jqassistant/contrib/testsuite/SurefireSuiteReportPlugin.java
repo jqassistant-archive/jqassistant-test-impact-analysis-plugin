@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -29,12 +28,18 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
     private static final String PROPERTY_TESTS_COLUMN = "testsuite.surefire.testsColumn";
     private static final String PROPERTY_REPORT_FILE = "testsuite.surefire.file";
 
-    private static final String DEFAULT_DIRECTORY_DEFAULT = "jqassistant/report/testsuite";
+    private static final String DEFAULT_DIRECTORY = "jqassistant/report/testsuite";
     private static final String DEFAULT_ARTIFACT_COLUMN = "Artifact";
     private static final String DEFAULT_TESTS_COLUMN = "Tests";
     private static final String DEFAULT_REPORT_FILE = "surefire-tests";
 
     private File reportDirectory;
+
+    private File reportFile;
+
+    private String artifactColumn = DEFAULT_ARTIFACT_COLUMN;
+
+    private String testsColumn = DEFAULT_TESTS_COLUMN;
 
     @Override
     public void initialize() throws ReportException {
@@ -43,9 +48,17 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
     @Override
     public void configure(Map<String, Object> properties) throws ReportException {
         String directoryName = (String) properties.get(PROPERTY_DIRECTORY);
-        this.reportDirectory = directoryName != null ? new File(directoryName) : new File(DEFAULT_DIRECTORY_DEFAULT);
+        this.reportDirectory = directoryName != null ? new File(directoryName) : new File(DEFAULT_DIRECTORY);
         if (this.reportDirectory.mkdirs()) {
             LOGGER.info("Created directory '" + this.reportDirectory.getAbsolutePath() + "'.");
+        }
+        String reportFileName = (String) properties.get(PROPERTY_REPORT_FILE);
+        this.reportFile = reportFileName != null ? new File(this.reportDirectory, reportFileName) : null;
+        if (properties.containsKey(PROPERTY_ARTIFACT_COLUMN)) {
+            this.artifactColumn = (String) properties.get(PROPERTY_ARTIFACT_COLUMN);
+        }
+        if (properties.containsKey(PROPERTY_TESTS_COLUMN)) {
+            this.testsColumn = (String) properties.get(PROPERTY_TESTS_COLUMN);
         }
     }
 
@@ -85,14 +98,11 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
     public void setResult(Result<? extends ExecutableRule> result) throws ReportException {
         Report report = result.getRule().getReport();
         if (isTestSuiteReport(report)) {
-            Properties properties = report.getProperties();
-            String artifactColumn = properties.getProperty(PROPERTY_ARTIFACT_COLUMN, DEFAULT_ARTIFACT_COLUMN);
-            String testsColumn = properties.getProperty(PROPERTY_TESTS_COLUMN, DEFAULT_TESTS_COLUMN);
             Set<File> files = new HashSet<>();
             for (Map<String, Object> row : result.getRows()) {
                 ArtifactDescriptor artifactDescriptor = getColumnValue(row, artifactColumn, ArtifactDescriptor.class);
                 Iterable<ClassTypeDescriptor> testClasses = getColumnValue(row, testsColumn, Iterable.class);
-                File file = getReportFile(properties, artifactDescriptor);
+                File file = getReportFile(artifactDescriptor);
                 if (testClasses == null) {
                     LOGGER.warn("Cannot determine tests from column '" + testsColumn + "'.");
                 } else {
@@ -143,14 +153,23 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
         return expectedType.cast(value);
     }
 
-    private File getReportFile(Properties properties, ArtifactDescriptor artifactDescriptor) {
+    /**
+     * Determines the report file for the given artifact.
+     * 
+     * @param artifactDescriptor
+     *            The artifact descriptor.
+     * @return The report file.
+     */
+    private File getReportFile(ArtifactDescriptor artifactDescriptor) {
         File file;
-        if (artifactDescriptor != null) {
+        if (this.reportFile != null) {
+            file = this.reportFile;
+        } else if (artifactDescriptor != null) {
             file = new File(reportDirectory, artifactDescriptor.getName());
         } else {
-            file = new File(reportDirectory, properties.getProperty(PROPERTY_REPORT_FILE, DEFAULT_REPORT_FILE));
-            LOGGER.info("Result does not contain artifact column, writing tests to '" + file.getPath() + "'.");
+            file = new File(reportDirectory, DEFAULT_REPORT_FILE);
         }
+        LOGGER.info("Writing results tests to '" + file.getPath() + "'.");
         return file;
     }
 
@@ -181,5 +200,4 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
             throw new ReportException("Cannot write tests to '" + file.getAbsolutePath() + "'");
         }
     }
-
 }
