@@ -1,0 +1,177 @@
+= jQAssistant Testsuite Plugin
+
+This project provides a http://jqassistant.org/[jQAssistant] plugin for dynamically generating test suites based on
+changes in the version control system, i.e. Git.
+The test suites are represented by files which can be passed as parameters to http://maven.apache.org/surefire/maven-surefire-plugin/[Maven Surefire Plugin]
+or http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin] via the `includesFile` option.
+
+== Prerequisites
+
+* Java 7 or higher
+* Maven 3.2.5 or higher
+* jQAssistant 1.3.0 or higher (see below)
+
+== Setup
+
+The plugin is available from Maven Central repository and can be enabled by adding it as a dependency to the jQAssistant Maven plugin:
+
+[source,xml]
+.pom.xml
+----
+<build>
+    <plugins>
+        <plugin>
+            <groupId>com.buschmais.jqassistant</groupId>
+            <artifactId>jqassistant-maven-plugin</artifactId>
+            <version>1.3.0</version>
+            <executions>
+                <execution>
+                    <id>default-cli</id>
+                    <goals>
+                        <goal>scan</goal>
+                        <goal>analyze</goal>
+                    </goals>
+                    <configuration>
+                        <failOnSeverity>MAJOR</failOnSeverity>
+                        <warnOnSeverity>MINOR</warnOnSeverity>
+                        <scanIncludes>
+                            <scanInclude>
+                                <path>${project.basedir}/.git</path>
+                            </scanInclude>
+                        </scanIncludes>
+                        <reportProperties>                                               <!-- <1> -->
+                            <testsuite.report.directory>${session.executionRootDirectory}/target/testsuite</testsuite.report.directory>
+                        </reportProperties>
+                    </configuration>
+                </execution>
+            </executions>
+            <dependencies>
+                <dependency>                                                             <!-- <2> -->
+                    <groupId>org.jqassistant.contrib.testsuite</groupId>
+                    <artifactId>jqassistant-testsuite-plugin</artifactId>
+                    <version>1.0.0</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+</build>
+
+<profiles>
+    <profile>
+        <id>create-commit-testsuite</id>                                                 <!-- <3> -->
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.buschmais.jqassistant</groupId>
+                    <artifactId>jqassistant-maven-plugin</artifactId>
+                    <configuration>
+                        <concepts>
+                            <concept>testsuite:SurefireSuiteForLastGitCommit</concept>   <!-- <4> -->
+                        </concepts>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+
+    <profile>
+        <id>create-branch-testsuite</id>                                                 <!-- <5> -->
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.buschmais.jqassistant</groupId>
+                    <artifactId>jqassistant-maven-plugin</artifactId>
+                    <configuration>
+                        <concepts>
+                            <concept>testsuite:SurefireSuiteForCurrentBranch</concept>
+                        </concepts>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+
+    <profile>
+        <id>run-testsuite</id>                                                           <!-- <6> -->
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <includesFile>${session.executionRootDirectory}/target/testsuite/${project.artifactId}</includesFile>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.buschmais.jqassistant</groupId>
+                    <artifactId>jqassistant-maven-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profile>
+----
+<1> Configures the directory where the jQAssistant testsuite plugin will create the files
+<2> Declares the plugin as dependency for jQAssistant
+<3> Defines the profile to be used for creating a test suite based on the last Git commit
+<4> Activates the concept `testsuite:SurefireSuiteForLastGitCommit`
+<5> Defines the profile to be used for creating a test suite based on the commits within the current Git branch
+<6> Activates the concept `testsuite:SurefireSuiteForCurrentBranch`
+
+== Creating The Test Suite
+
+The profiles `create-commit-testsuite` and `create-branch-testsuite` are used to create the required test suite files.
+Either one of the following commands needs to be executed:
+
+[source,raw]
+.Create
+----
+mvn clean verify -Pcreate-commit-testsuite
+----
+
+[source,raw]
+----
+mvn clean verify -Pcreate-branch-testsuite
+----
+
+The test suite files (one per artifact) are available in the 'target/testsuite' folder of the module where Maven has been executed, e.g.
+
+[source,raw]
+----
+org/springframework/samples/petclinic/web/OwnerControllerTests.java
+org/springframework/samples/petclinic/web/PetControllerTests.java
+org/springframework/samples/petclinic/web/PetTypeFormatterTests.java
+org/springframework/samples/petclinic/web/VetControllerTests.java
+org/springframework/samples/petclinic/web/VisitControllerTests.java
+----
+
+== Running The Test Suite
+
+The following command triggers a build which only executes the tests which are defined in the test suite files.
+
+[source,raw]
+----
+mvn verify -Prun-testsuite
+----
+
+== Feedback
+
+Please report any issues https://github.com/jqassistant-contrib/jqassistant-testsuite-plugin/issues[here].
+
