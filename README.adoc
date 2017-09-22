@@ -170,6 +170,7 @@ mvn clean verify -Pcreate-branch-testsuite
 The test suite files (one per artifact) are available in the 'target/testsuite' folder of the module where Maven has been executed, e.g.
 
 [source,raw]
+.target/testsuite/spring-petclinic
 ----
 org/springframework/samples/petclinic/web/OwnerControllerTests.java
 org/springframework/samples/petclinic/web/PetControllerTests.java
