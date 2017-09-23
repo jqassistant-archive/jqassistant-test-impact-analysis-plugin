@@ -232,9 +232,9 @@ RETURN
   artifact as Artifact, collect(test) as Tests
 ----
 ....
-(1) Declares the concept for integration tests affected by the last Git commit
-(2) The filter clause for test classes having a name with the suffix "IT"
-(3) Declares the concept for integration tests affected by commit within the current Git branch
+<1> Declares the concept for integration tests affected by the last Git commit
+<2> The filter clause for test classes having a name with the suffix "IT"
+<3> Declares the concept for integration tests affected by commit within the current Git branch
 
 The result of the concepts are reported as "surefire-suite".
 This report type requires each row to provide two columns:
