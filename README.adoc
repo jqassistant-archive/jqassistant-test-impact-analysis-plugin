@@ -210,18 +210,18 @@ The following two rules select integration tests by checking their name for the 
 ....
 = My Rules
 
-[[my-rules:IntegrationTestsForLastGitCommit]]          // (1)
+[[my-rules:IntegrationTestsForLastGitCommit]]          // <1>
 [source,cypher,role=concept,requiresConcepts="testsuite:TestsAffectedByLastGitCommit",reportType="surefire-suite"]
 ----
 MATCH
   (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
 WHERE
-  test.name ends with "IT"                             // (2)
+  test.name ends with "IT"                             // <2>
 RETURN
   artifact as Artifact, collect(test) as Tests
 ----
 
-[[my-rules:IntegrationTestsForCurrentGitBranch]]       // (3)
+[[my-rules:IntegrationTestsForCurrentGitBranch]]       // <3>
 [source,cypher,role=concept,requiresConcepts="testsuite:TestsAffectedByCurrentGitBranch",reportType="surefire-suite"]
 ----
 MATCH
