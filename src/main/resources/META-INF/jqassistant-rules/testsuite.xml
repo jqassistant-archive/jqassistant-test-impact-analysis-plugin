@@ -18,7 +18,7 @@
         ]]></cypher>
     </concept>
 
-    <concept id="testsuite:TestAffectedByLastGitCommit" severity="info">
+    <concept id="testsuite:TestsAffectedByLastGitCommit" severity="info">
         <requiresConcept refId="testsuite:CurrentGitBranch" />
         <requiresConcept refId="junit4:TestClass" />
         <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed in the last Git commit.</description>
@@ -51,7 +51,7 @@
     </concept>
 
     <concept id="testsuite:SurefireSuiteForLastGitCommit" severity="info">
-        <requiresConcept refId="testsuite:TestAffectedByLastGitCommit" />
+        <requiresConcept refId="testsuite:TestsAffectedByLastGitCommit" />
         <description>Reports all test classes affected by the last Git commit.</description>
         <cypher><![CDATA[
             MATCH
@@ -64,7 +64,7 @@
         <report type="surefire-suite" />
     </concept>
 
-    <concept id="testsuite:TestAffectedByCurrentBranch" severity="info">
+    <concept id="testsuite:TestsAffectedByCurrentGitBranch" severity="info">
         <requiresConcept refId="testsuite:CurrentGitBranch" />
         <requiresConcept refId="junit4:TestClass" />
         <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed by commits in the current Git branch.</description>

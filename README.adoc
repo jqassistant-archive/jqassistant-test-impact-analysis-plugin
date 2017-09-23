@@ -1,3 +1,4 @@
+:toc:
 = jQAssistant Testsuite Plugin
 
 This project provides a http://jqassistant.org/[jQAssistant] plugin for dynamically generating test suites based on
@@ -25,8 +26,8 @@ NOTE: Once the plugin has been released it will be available from http://search.
 
 The plugin can be enabled in a Maven based project by adding it as a dependency to the jQAssistant Maven plugin:
 
-[source,xml]
 .pom.xml
+[source,xml]
 ----
 <build>
     <plugins>
@@ -49,14 +50,14 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                                 <path>${project.basedir}/.git</path>
                             </scanInclude>
                         </scanIncludes>
-                        <reportProperties>                                               <!-- <1> -->
+                        <reportProperties>                                               <!--1-->
                             <testsuite.report.directory>${session.executionRootDirectory}/target/testsuite</testsuite.report.directory>
                         </reportProperties>
                     </configuration>
                 </execution>
             </executions>
             <dependencies>
-                <dependency>                                                             <!-- <2> -->
+                <dependency>                                                             <!--2-->
                     <groupId>org.jqassistant.contrib.testsuite</groupId>
                     <artifactId>jqassistant-testsuite-plugin</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
@@ -76,7 +77,7 @@ Furthermore profiles should be defined for making execution easier:
 ----
 <profiles>
     <profile>
-        <id>create-commit-testsuite</id>                                                 <!-- <1> -->
+        <id>create-commit-testsuite</id>                                                 <!--1-->
         <build>
             <plugins>
                 <plugin>
@@ -91,7 +92,7 @@ Furthermore profiles should be defined for making execution easier:
                     <artifactId>jqassistant-maven-plugin</artifactId>
                     <configuration>
                         <concepts>
-                            <concept>testsuite:SurefireSuiteForLastGitCommit</concept>   <!-- <2> -->
+                            <concept>testsuite:SurefireSuiteForLastGitCommit</concept>   <!--2-->
                         </concepts>
                     </configuration>
                 </plugin>
@@ -100,7 +101,7 @@ Furthermore profiles should be defined for making execution easier:
     </profile>
 
     <profile>
-        <id>create-branch-testsuite</id>                                                 <!-- <3> -->
+        <id>create-branch-testsuite</id>                                                 <!--3-->
         <build>
             <plugins>
                 <plugin>
@@ -115,7 +116,7 @@ Furthermore profiles should be defined for making execution easier:
                     <artifactId>jqassistant-maven-plugin</artifactId>
                     <configuration>
                         <concepts>
-                            <concept>testsuite:SurefireSuiteForCurrentBranch</concept>   <!-- <4> -->
+                            <concept>testsuite:SurefireSuiteForCurrentBranch</concept>   <!--4-->
                         </concepts>
                     </configuration>
                 </plugin>
@@ -124,7 +125,7 @@ Furthermore profiles should be defined for making execution easier:
     </profile>
 
     <profile>
-        <id>run-testsuite</id>                                                           <!-- <5> -->
+        <id>run-testsuite</id>                                                           <!--5-->
         <build>
             <plugins>
                 <plugin>
@@ -188,9 +189,63 @@ The following command triggers a build which only executes the tests which are d
 mvn verify -Prun-testsuite
 ----
 
-Enjoy!
+== Advanced: Selecting Specific Tests
+
+It is possible to select only specific tests to be included in the created test suite files, e.g. if only integration tests shall be executed using the http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin].
+Therefore a rule needs to be created using Cypher (Neo4j query language) which does the required filtering.
+The rule can be loaded by jQAssistant from Asciidoc or XML files located in the folder "jqassistant" in the root module of the Maven project:
+
+.Example project structure
+----
+myproject/
+         /jqassistant/my-rules.adoc
+         /module1/pom.xml
+         /module2/pom.xml
+         /pom.xml
+----
+
+The following two rules select integration tests by checking their name for the suffix "IT":
+
+.jqassistant/my-rules.adoc
+....
+= My Rules
+
+[[my-rules:IntegrationTestsForLastGitCommit]]          // (1)
+[source,cypher,role=concept,requiresConcepts="testsuite:TestsAffectedByLastGitCommit",reportType="surefire-suite"]
+----
+MATCH
+  (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
+WHERE
+  test.name ends with "IT"                             // (2)
+RETURN
+  artifact as Artifact, collect(test) as Tests
+----
+
+[[my-rules:IntegrationTestsForCurrentGitBranch]]       // (3)
+[source,cypher,role=concept,requiresConcepts="testsuite:TestsAffectedByCurrentGitBranch",reportType="surefire-suite"]
+----
+MATCH
+  (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
+WHERE
+  test.name ends with "IT"
+RETURN
+  artifact as Artifact, collect(test) as Tests
+----
+....
+(1) Declares the concept for integration tests affected by the last Git commit
+(2) The filter clause for test classes having a name with the suffix "IT"
+(3) Declares the concept for integration tests affected by commit within the current Git branch
+
+The result of the concepts are reported as "surefire-suite".
+This report type requires each row to provide two columns:
+
+Artifact::
+  The artifact where affected test classes are located.
+Tests::
+  The collection of affected tests for the artifact.
 
 == Feedback
 
 Please report any issues https://github.com/jqassistant-contrib/jqassistant-testsuite-plugin/issues[here].
 
+Enjoy!
