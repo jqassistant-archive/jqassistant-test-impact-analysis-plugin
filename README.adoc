@@ -3,6 +3,7 @@
 
 This project provides a http://jqassistant.org/[jQAssistant] plugin for dynamically generating test suites based on
 changes in the version control system, i.e. Git.
+
 The test suites are represented by files which can be passed as parameters to http://maven.apache.org/surefire/maven-surefire-plugin/[Maven Surefire Plugin]
 or http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin] via the `includesFile` option.
 
@@ -20,7 +21,7 @@ Clone this repository and execute the following command:
 mvn install
 ----
 
-NOTE: Once the plugin has been released it will be available from http://search.maven.org[Maven Central repository].
+NOTE: Once the plugin has been released it will be available from http://search.maven.org[Maven Central] repository.
 
 == Setup
 
@@ -45,6 +46,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                     <configuration>
                         <failOnSeverity>MAJOR</failOnSeverity>
                         <warnOnSeverity>MINOR</warnOnSeverity>
+                        <useExecutionRootAsProjectRoot>true</useExecutionRootAsProjectRoot>
                         <scanIncludes>
                             <scanInclude>
                                 <path>${project.basedir}/.git</path>
@@ -153,7 +155,7 @@ Furthermore profiles should be defined for making execution easier:
 <4> Activates the concept `testsuite:SurefireSuiteForCurrentBranch`
 <5> Defines the profile for running the tests defined in the generated test suite
 
-== Creating The Test Suite
+== Creating And Running A Test Suite
 
 The profiles `create-commit-testsuite` and `create-branch-testsuite` are used to create the required test suite files.
 Either one of the following commands needs to be executed:
@@ -180,8 +182,6 @@ org/springframework/samples/petclinic/web/VetControllerTests.java
 org/springframework/samples/petclinic/web/VisitControllerTests.java
 ----
 
-== Running The Test Suite
-
 The following command triggers a build which only executes the tests which are defined in the generated test suite files:
 
 [source,raw]
@@ -197,11 +197,11 @@ The rule can be loaded by jQAssistant from Asciidoc or XML files located in the 
 
 .Example project structure
 ----
-myproject/
-         /jqassistant/my-rules.adoc
-         /module1/pom.xml
-         /module2/pom.xml
-         /pom.xml
+my-project/
+          /jqassistant/my-rules.adoc
+          /module1/pom.xml
+          /module2/pom.xml
+          /pom.xml
 ----
 
 The following two rules select integration tests by checking their name for the suffix "IT":
@@ -247,5 +247,3 @@ Tests::
 == Feedback
 
 Please report any issues https://github.com/jqassistant-contrib/jqassistant-testsuite-plugin/issues[here].
-
-Enjoy!

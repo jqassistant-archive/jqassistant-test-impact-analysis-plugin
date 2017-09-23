@@ -109,7 +109,7 @@
     </concept>
 
     <concept id="testsuite:SurefireSuiteForCurrentBranch" severity="info">
-        <requiresConcept refId="testsuite:TestAffectedByCurrentBranch" />
+        <requiresConcept refId="testsuite:TestsAffectedByCurrentGitBranch" />
         <description>Reports all test classes affected by commits in the current Git branch.</description>
         <cypher><![CDATA[
             MATCH
