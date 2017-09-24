@@ -1,7 +1,8 @@
-package org.jqassistant.contrib.testsuite;
+package org.jqassistant.contrib.plugin.testimpactanalysis;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.jqassistant.contrib.plugin.testimpactanalysis.SurefireSuiteReportPlugin.REPORT_ID;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -13,9 +14,9 @@ import java.io.LineNumberReader;
 import java.util.*;
 
 import org.apache.commons.io.FileUtils;
-import org.jqassistant.contrib.testsuite.set.Artifact1Test1;
-import org.jqassistant.contrib.testsuite.set.Artifact1Test2;
-import org.jqassistant.contrib.testsuite.set.Artifact2Test1;
+import org.jqassistant.contrib.plugin.testimpactanalysis.set.Artifact1Test2;
+import org.jqassistant.contrib.plugin.testimpactanalysis.set.Artifact2Test1;
+import org.jqassistant.contrib.plugin.testimpactanalysis.set.Artifact1Test1;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,7 @@ import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
 @RunWith(MockitoJUnitRunner.class)
 public class SurefireSuiteReportPluginTest {
 
-    private static final File REPORT_DIRECTORY = new File("target/testsuite");
+    private static final File REPORT_DIRECTORY = new File("target/testimpactanalysis");
 
     private SurefireSuiteReportPlugin plugin = new SurefireSuiteReportPlugin();
 
@@ -67,8 +68,8 @@ public class SurefireSuiteReportPluginTest {
         Properties reportProperties = new Properties();
         Result<? extends ExecutableRule> result = getResult(rows, reportProperties);
         Map<String, Object> configuration = getConfiguration();
-        configuration.put("testsuite.surefire.artifactColumn", "a");
-        configuration.put("testsuite.surefire.testsColumn", "t");
+        configuration.put("testimpactanalysis.surefire.artifactColumn", "a");
+        configuration.put("testimpactanalysis.surefire.testsColumn", "t");
         plugin.configure(configuration);
 
         plugin.setResult(result);
@@ -101,7 +102,7 @@ public class SurefireSuiteReportPluginTest {
         Properties reportProperties = new Properties();
         Result<? extends ExecutableRule> result = getResult(rows, reportProperties);
         Map<String, Object> configuration = getConfiguration();
-        configuration.put("testsuite.surefire.file", "tests");
+        configuration.put("testimpactanalysis.surefire.file", "tests");
         plugin.configure(configuration);
 
         plugin.setResult(result);
@@ -138,7 +139,7 @@ public class SurefireSuiteReportPluginTest {
 
         Report report = mock(Report.class);
         when(concept.getReport()).thenReturn(report);
-        when(report.getSelectedTypes()).thenReturn(new HashSet<>(asList(SurefireSuiteReportPlugin.REPORT_ID)));
+        when(report.getSelectedTypes()).thenReturn(new HashSet<>(asList(REPORT_ID)));
         when(report.getProperties()).thenReturn(reportProperties);
 
         when(result.getRows()).thenReturn(rows);
@@ -147,7 +148,7 @@ public class SurefireSuiteReportPluginTest {
 
     private Map<String, Object> getConfiguration() throws ReportException {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("testsuite.report.directory", REPORT_DIRECTORY.getAbsolutePath());
+        properties.put("testimpactanalysis.report.directory", REPORT_DIRECTORY.getAbsolutePath());
         return properties;
     }
 

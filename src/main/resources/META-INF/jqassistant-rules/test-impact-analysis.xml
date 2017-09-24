@@ -1,6 +1,6 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.3">
 
-    <concept id="testsuite:CurrentGitBranch" severity="info">
+    <concept id="test-impact-analysis:CurrentGitBranch" severity="info">
         <description>Determines the Git current branch and adds a label "Current".</description>
         <cypher><![CDATA[
             MATCH
@@ -18,8 +18,8 @@
         ]]></cypher>
     </concept>
 
-    <concept id="testsuite:TestsAffectedByLastGitCommit" severity="info">
-        <requiresConcept refId="testsuite:CurrentGitBranch" />
+    <concept id="test-impact-analysis:TestsAffectedByLastGitCommit" severity="info">
+        <requiresConcept refId="test-impact-analysis:CurrentGitBranch" />
         <requiresConcept refId="junit4:TestClass" />
         <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed in the last Git commit.</description>
         <cypher><![CDATA[
@@ -50,8 +50,8 @@
         ]]></cypher>
     </concept>
 
-    <concept id="testsuite:SurefireSuiteForLastGitCommit" severity="info">
-        <requiresConcept refId="testsuite:TestsAffectedByLastGitCommit" />
+    <concept id="test-impact-analysis:SurefireSuiteForLastGitCommit" severity="info">
+        <requiresConcept refId="test-impact-analysis:TestsAffectedByLastGitCommit" />
         <description>Reports all test classes affected by the last Git commit.</description>
         <cypher><![CDATA[
             MATCH
@@ -64,8 +64,8 @@
         <report type="surefire-suite" />
     </concept>
 
-    <concept id="testsuite:TestsAffectedByCurrentGitBranch" severity="info">
-        <requiresConcept refId="testsuite:CurrentGitBranch" />
+    <concept id="test-impact-analysis:TestsAffectedByCurrentGitBranch" severity="info">
+        <requiresConcept refId="test-impact-analysis:CurrentGitBranch" />
         <requiresConcept refId="junit4:TestClass" />
         <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed by commits in the current Git branch.</description>
         <cypher><![CDATA[
@@ -108,8 +108,8 @@
         ]]></cypher>
     </concept>
 
-    <concept id="testsuite:SurefireSuiteForCurrentBranch" severity="info">
-        <requiresConcept refId="testsuite:TestsAffectedByCurrentGitBranch" />
+    <concept id="test-impact-analysis:SurefireSuiteForCurrentBranch" severity="info">
+        <requiresConcept refId="test-impact-analysis:TestsAffectedByCurrentGitBranch" />
         <description>Reports all test classes affected by commits in the current Git branch.</description>
         <cypher><![CDATA[
             MATCH

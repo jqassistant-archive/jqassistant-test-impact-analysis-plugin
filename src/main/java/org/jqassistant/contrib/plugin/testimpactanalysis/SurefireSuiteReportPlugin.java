@@ -1,4 +1,4 @@
-package org.jqassistant.contrib.testsuite;
+package org.jqassistant.contrib.plugin.testimpactanalysis;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,17 +18,21 @@ import com.buschmais.jqassistant.core.report.api.ReportPlugin;
 import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
 
+/**
+ * A {@link ReportPlugin} that creates files containing source file names of
+ * test classes for execution using Maven Surefire Plugin.
+ */
 public class SurefireSuiteReportPlugin implements ReportPlugin {
 
-    public static final String REPORT_ID = "surefire-suite";
+    static final String REPORT_ID = "surefire-suite";
     private static final Logger LOGGER = LoggerFactory.getLogger(SurefireSuiteReportPlugin.class);
 
-    private static final String PROPERTY_DIRECTORY = "testsuite.report.directory";
-    private static final String PROPERTY_ARTIFACT_COLUMN = "testsuite.surefire.artifactColumn";
-    private static final String PROPERTY_TESTS_COLUMN = "testsuite.surefire.testsColumn";
-    private static final String PROPERTY_REPORT_FILE = "testsuite.surefire.file";
+    private static final String PROPERTY_DIRECTORY = "testimpactanalysis.report.directory";
+    private static final String PROPERTY_ARTIFACT_COLUMN = "testimpactanalysis.surefire.artifactColumn";
+    private static final String PROPERTY_TESTS_COLUMN = "testimpactanalysis.surefire.testsColumn";
+    private static final String PROPERTY_REPORT_FILE = "testimpactanalysis.surefire.file";
 
-    private static final String DEFAULT_DIRECTORY = "jqassistant/report/testsuite";
+    private static final String DEFAULT_DIRECTORY = "jqassistant/report/testimpactanalysis";
     private static final String DEFAULT_ARTIFACT_COLUMN = "Artifact";
     private static final String DEFAULT_TESTS_COLUMN = "Tests";
     private static final String DEFAULT_REPORT_FILE = "surefire-tests";

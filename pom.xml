@@ -8,12 +8,12 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>org.jqassistant.contrib.testsuite</groupId>
-    <artifactId>jqassistant-testsuite-plugin</artifactId>
+    <groupId>org.jqassistant.contrib.plugin</groupId>
+    <artifactId>jqassistant-test-impact-analysis-plugin</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <name>jQAssistant Dynamic TestSuite Plugin</name>
-    <description>jQAssistant plugin for dynamic test suites.</description>
+    <name>jQAssistant Test Impact Analysis Plugin</name>
+    <description>The jQAssistant plugin for test impact analysis creates test suites for Maven based on changes in the version control system.</description>
     <url>https://github.com/jqassistant-contrib/jqassistant-testsuite-plugin</url>
 
     <developers>

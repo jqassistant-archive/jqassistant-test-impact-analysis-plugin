@@ -1,5 +1,5 @@
 :toc:
-= jQAssistant Testsuite Plugin
+= jQAssistant Test Impact Analysis Plugin
 
 This project provides a http://jqassistant.org/[jQAssistant] plugin for dynamically generating test suites based on
 changes in the version control system, i.e. Git.
@@ -15,13 +15,14 @@ or http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin
 
 == Building From Source
 
+NOTE: This plugin has not been released yet, snapshots are available from https://oss.sonatype.org/content/repositories/snapshots[Sonatype OSS] snapshot repository.
+Once the plugin has been released it will be published to http://search.maven.org[Maven Central].
+
 Clone this repository and execute the following command:
 
 ----
 mvn install
 ----
-
-NOTE: Once the plugin has been released it will be available from http://search.maven.org[Maven Central] repository.
 
 == Setup
 
@@ -94,7 +95,7 @@ Furthermore profiles should be defined for making execution easier:
                     <artifactId>jqassistant-maven-plugin</artifactId>
                     <configuration>
                         <concepts>
-                            <concept>testsuite:SurefireSuiteForLastGitCommit</concept>   <!--2-->
+                            <concept>test-impact-analysis:SurefireSuiteForLastGitCommit</concept>   <!--2-->
                         </concepts>
                     </configuration>
                 </plugin>
@@ -118,7 +119,7 @@ Furthermore profiles should be defined for making execution easier:
                     <artifactId>jqassistant-maven-plugin</artifactId>
                     <configuration>
                         <concepts>
-                            <concept>testsuite:SurefireSuiteForCurrentBranch</concept>   <!--4-->
+                            <concept>test-impact-analysis:SurefireSuiteForCurrentBranch</concept>   <!--4-->
                         </concepts>
                     </configuration>
                 </plugin>
@@ -150,9 +151,9 @@ Furthermore profiles should be defined for making execution easier:
 </profile>
 ----
 <1> Defines the profile to be used for creating a test suite based on the last Git commit
-<2> Activates the concept `testsuite:SurefireSuiteForLastGitCommit`
+<2> Activates the concept `test-impact-analysis:SurefireSuiteForLastGitCommit`
 <3> Defines the profile to be used for creating a test suite based on the commits within the current Git branch
-<4> Activates the concept `testsuite:SurefireSuiteForCurrentBranch`
+<4> Activates the concept `test-impact-analysis:SurefireSuiteForCurrentBranch`
 <5> Defines the profile for running the tests defined in the generated test suite
 
 == Creating And Running A Test Suite
@@ -211,7 +212,7 @@ The following two rules select integration tests by checking their name for the 
 = My Rules
 
 [[my-rules:IntegrationTestsForLastGitCommit]]          // <1>
-[source,cypher,role=concept,requiresConcepts="testsuite:TestsAffectedByLastGitCommit",reportType="surefire-suite"]
+[source,cypher,role=concept,requiresConcepts="test-impact-analysis:TestsAffectedByLastGitCommit",reportType="surefire-suite"]
 ----
 MATCH
   (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
@@ -222,7 +223,7 @@ RETURN
 ----
 
 [[my-rules:IntegrationTestsForCurrentGitBranch]]       // <3>
-[source,cypher,role=concept,requiresConcepts="testsuite:TestsAffectedByCurrentGitBranch",reportType="surefire-suite"]
+[source,cypher,role=concept,requiresConcepts="test-impact-analysis:TestsAffectedByCurrentGitBranch",reportType="surefire-suite"]
 ----
 MATCH
   (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
