@@ -5,7 +5,7 @@ This project provides a http://jqassistant.org/[jQAssistant] plugin for dynamica
 changes in the version control system, i.e. Git.
 
 The test suites are represented by files which can be passed as parameters to http://maven.apache.org/surefire/maven-surefire-plugin/[Maven Surefire Plugin]
-or http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin] via the `includesFile` option.
+or http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin] via the http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#includesFile[includesFile] option.
 
 == Prerequisites
 
@@ -80,7 +80,7 @@ Furthermore profiles should be defined for making execution easier:
 ----
 <profiles>
     <profile>
-        <id>create-commit-testsuite</id>                                                 <!--1-->
+        <id>create-commit-testsuite</id>                                                           <!--1-->
         <build>
             <plugins>
                 <plugin>
@@ -95,7 +95,7 @@ Furthermore profiles should be defined for making execution easier:
                     <artifactId>jqassistant-maven-plugin</artifactId>
                     <configuration>
                         <concepts>
-                            <concept>test-impact-analysis:SurefireSuiteForLastGitCommit</concept>   <!--2-->
+                            <concept>test-impact-analysis:SurefireSuiteForLastGitCommit</concept>  <!--2-->
                         </concepts>
                     </configuration>
                 </plugin>
@@ -104,7 +104,7 @@ Furthermore profiles should be defined for making execution easier:
     </profile>
 
     <profile>
-        <id>create-branch-testsuite</id>                                                 <!--3-->
+        <id>create-branch-testsuite</id>                                                           <!--3-->
         <build>
             <plugins>
                 <plugin>
@@ -119,7 +119,7 @@ Furthermore profiles should be defined for making execution easier:
                     <artifactId>jqassistant-maven-plugin</artifactId>
                     <configuration>
                         <concepts>
-                            <concept>test-impact-analysis:SurefireSuiteForCurrentBranch</concept>   <!--4-->
+                            <concept>test-impact-analysis:SurefireSuiteForCurrentBranch</concept>  <!--4-->
                         </concepts>
                     </configuration>
                 </plugin>
@@ -128,7 +128,7 @@ Furthermore profiles should be defined for making execution easier:
     </profile>
 
     <profile>
-        <id>run-testsuite</id>                                                           <!--5-->
+        <id>run-testsuite</id>                                                                     <!--5-->
         <build>
             <plugins>
                 <plugin>
