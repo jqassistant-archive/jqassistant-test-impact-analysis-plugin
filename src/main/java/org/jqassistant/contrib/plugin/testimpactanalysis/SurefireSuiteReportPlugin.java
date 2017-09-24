@@ -173,7 +173,7 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
         } else {
             file = new File(reportDirectory, DEFAULT_REPORT_FILE);
         }
-        LOGGER.info("Writing results tests to '" + file.getPath() + "'.");
+        LOGGER.info("Writing tests to '" + file.getPath() + "'.");
         return file;
     }
 
@@ -201,7 +201,7 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
                 writer.println(fullSourceName);
             }
         } catch (IOException e) {
-            throw new ReportException("Cannot write tests to '" + file.getAbsolutePath() + "'");
+            throw new ReportException("Cannot write tests to '" + file.getAbsolutePath() + "'", e);
         }
     }
 }

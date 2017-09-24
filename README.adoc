@@ -54,7 +54,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                             </scanInclude>
                         </scanIncludes>
                         <reportProperties>                                               <!--1-->
-                            <testsuite.report.directory>${session.executionRootDirectory}/target/testsuite</testsuite.report.directory>
+                            <testimpactanalysis.report.directory>${session.executionRootDirectory}/target/testimpactanalysis</testimpactanalysis.report.directory>
                         </reportProperties>
                     </configuration>
                 </execution>
@@ -62,7 +62,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
             <dependencies>
                 <dependency>                                                             <!--2-->
                     <groupId>org.jqassistant.contrib.testsuite</groupId>
-                    <artifactId>jqassistant-testsuite-plugin</artifactId>
+                    <artifactId>jqassistant-test-impact-analysis-plugin</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
@@ -135,7 +135,7 @@ Furthermore profiles should be defined for making execution easier:
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
-                        <includesFile>${session.executionRootDirectory}/target/testsuite/${project.artifactId}</includesFile>
+                        <includesFile>${session.executionRootDirectory}/target/testimpactanalysis/${project.artifactId}</includesFile>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -171,10 +171,10 @@ mvn clean verify -Pcreate-commit-testsuite
 mvn clean verify -Pcreate-branch-testsuite
 ----
 
-The test suite files (one per artifact) are available in the 'target/testsuite' folder of the module where Maven has been executed, e.g.
+The test suite files (one per artifact) are available in the 'target/testimpactanalysis' folder of the module where Maven has been executed, e.g.
 
 [source,raw]
-.target/testsuite/spring-petclinic
+.target/testimpactanalysis/spring-petclinic
 ----
 org/springframework/samples/petclinic/web/OwnerControllerTests.java
 org/springframework/samples/petclinic/web/PetControllerTests.java
@@ -247,4 +247,4 @@ Tests::
 
 == Feedback
 
-Please report any issues https://github.com/jqassistant-contrib/jqassistant-testsuite-plugin/issues[here].
+Please report any issues https://github.com/jqassistant-contrib/jqassistant-test-impact-analysis-plugin/issues[here].
