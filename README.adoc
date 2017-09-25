@@ -80,7 +80,7 @@ Furthermore profiles should be defined for making execution easier:
 ----
 <profiles>
     <profile>
-        <id>create-commit-testsuite</id>                                                           <!--1-->
+        <id>create-commit-testsuite</id>                                                                     <!--1-->
         <build>
             <plugins>
                 <plugin>
@@ -95,7 +95,7 @@ Furthermore profiles should be defined for making execution easier:
                     <artifactId>jqassistant-maven-plugin</artifactId>
                     <configuration>
                         <concepts>
-                            <concept>test-impact-analysis:SurefireSuiteForLastGitCommit</concept>  <!--2-->
+                            <concept>test-impact-analysis:SurefireSuiteForLastGitCommit</concept>            <!--2-->
                         </concepts>
                     </configuration>
                 </plugin>
@@ -104,7 +104,7 @@ Furthermore profiles should be defined for making execution easier:
     </profile>
 
     <profile>
-        <id>create-branch-testsuite</id>                                                           <!--3-->
+        <id>create-branch-testsuite</id>                                                                     <!--3-->
         <build>
             <plugins>
                 <plugin>
@@ -119,8 +119,11 @@ Furthermore profiles should be defined for making execution easier:
                     <artifactId>jqassistant-maven-plugin</artifactId>
                     <configuration>
                         <concepts>
-                            <concept>test-impact-analysis:SurefireSuiteForCurrentBranch</concept>  <!--4-->
+                            <concept>test-impact-analysis:SurefireSuiteForCurrentBranch</concept>            <!--4-->
                         </concepts>
+                        <ruleParameters>
+                            <testImpactAnalysisGitBaseBranch>heads/master</testImpactAnalysisGitBaseBranch>  <!--5-->
+                        </ruleParameters>
                     </configuration>
                 </plugin>
             </plugins>
@@ -128,7 +131,7 @@ Furthermore profiles should be defined for making execution easier:
     </profile>
 
     <profile>
-        <id>run-testsuite</id>                                                                     <!--5-->
+        <id>run-testsuite</id>                                                                               <!--6-->
         <build>
             <plugins>
                 <plugin>
@@ -154,7 +157,8 @@ Furthermore profiles should be defined for making execution easier:
 <2> Activates the concept `test-impact-analysis:SurefireSuiteForLastGitCommit`
 <3> Defines the profile to be used for creating a test suite based on the commits within the current Git branch
 <4> Activates the concept `test-impact-analysis:SurefireSuiteForCurrentBranch`
-<5> Defines the profile for running the tests defined in the generated test suite
+<5> Defines the base branch to use for determining changes in the current branch (optional, default: "heads/master")
+<6> Defines the profile for running the tests defined in the generated test suite
 
 == Creating And Running A Test Suite
 

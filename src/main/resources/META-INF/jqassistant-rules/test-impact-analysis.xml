@@ -45,8 +45,6 @@
               test:Affected
             RETURN
               artifact as Artifact, collect(test) as Tests
-            ORDER BY
-              Artifact
         ]]></cypher>
     </concept>
 
@@ -55,32 +53,58 @@
         <description>Reports all test classes affected by the last Git commit.</description>
         <cypher><![CDATA[
             MATCH
-              (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
+              (:Maven:Project)-[:CREATES]->(artifact:Artifact)
+            OPTIONAL MATCH
+              (artifact)-[:CONTAINS]->(test:Affected:Test)
             RETURN
               artifact as Artifact, collect(test) as Tests
-            ORDER BY
-              Artifact
         ]]></cypher>
         <report type="surefire-suite" />
     </concept>
 
+    <concept id="test-impact-analysis:GitBaseCommit">
+        <description>Adds a label 'Base' to all commits with more than one child commits (i.e. commits where a branch is split off).</description>
+        <cypher><![CDATA[
+            MATCH
+              (child:Commit)-[p:HAS_PARENT]->(branchBase:Commit)
+            WITH
+              branchBase, count(child) as children
+            WHERE
+              children > 1
+            SET
+              branchBase:Base
+            RETURN
+              branchBase as Base, children as Children
+        ]]></cypher>
+    </concept>
+
+
     <concept id="test-impact-analysis:TestsAffectedByCurrentGitBranch" severity="info">
         <requiresConcept refId="test-impact-analysis:CurrentGitBranch" />
+        <requiresConcept refId="test-impact-analysis:GitBaseCommit" />
         <requiresConcept refId="junit4:TestClass" />
+        <requiresParameter name="testImpactAnalysisGitBaseBranch" type="String" defaultValue="heads/master"/>
         <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed by commits in the current Git branch.</description>
         <cypher><![CDATA[
             MATCH
-              (b:Branch:Current)-[:HAS_HEAD]->(head:Commit),
-              p=shortestPath((head)-[:HAS_PARENT*]->(first:Commit)),
-              (first)-[:HAS_PARENT]->(split:Commit)<-[:HAS_PARENT]-(other:Commit)
+              (branch:Branch:Current)-[:HAS_HEAD]->(branchHead:Commit),
+              branchHistory=shortestPath((base:Commit:Base)<-[:HAS_PARENT*]-(branchHead))
             WHERE
-              first <> other
+              branchHead <> base
             WITH
-              p
+              base, branchHistory
+            MATCH
+              (baseBranch:Branch)-[:HAS_HEAD]->(baseHead:Commit),
+              baseHistory=shortestPath((base)<-[:HAS_PARENT*]-(baseHead))
+            WHERE
+              baseBranch.name ends with {testImpactAnalysisGitBaseBranch}
+              and baseHead <> base
+            WITH
+              branchHistory
             LIMIT
               1
             UNWIND
-              nodes(p) as commit
+              nodes(branchHistory) as commit
             MATCH
               (commit)-[:CONTAINS_CHANGE]->()-[:MODIFIES]->(sourceFile:File)
             WHERE
@@ -103,8 +127,6 @@
               test:Affected
             RETURN
               artifact as Artifact, collect(test) as Tests
-            ORDER BY
-              Artifact
         ]]></cypher>
     </concept>
 
@@ -113,11 +135,11 @@
         <description>Reports all test classes affected by commits in the current Git branch.</description>
         <cypher><![CDATA[
             MATCH
-              (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
+              (:Maven:Project)-[:CREATES]->(artifact:Artifact)
+            OPTIONAL MATCH
+              (artifact)-[:CONTAINS]->(test:Affected:Test)
             RETURN
               artifact as Artifact, collect(test) as Tests
-            ORDER BY
-              Artifact
         ]]></cypher>
         <report type="surefire-suite" />
     </concept>

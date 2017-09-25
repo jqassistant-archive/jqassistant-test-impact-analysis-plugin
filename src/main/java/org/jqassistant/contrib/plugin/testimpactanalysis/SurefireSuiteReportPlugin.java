@@ -173,7 +173,6 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
         } else {
             file = new File(reportDirectory, DEFAULT_REPORT_FILE);
         }
-        LOGGER.info("Writing tests to '" + file.getPath() + "'.");
         return file;
     }
 
@@ -191,7 +190,8 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
      *             If the file cannot be written.
      */
     private void writeTests(File file, boolean append, Iterable<ClassTypeDescriptor> testClasses) throws ReportException {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(file), append)) {
+        LOGGER.info((append ? "Appending " : "Writing " )+ " tests to '" + file.getPath() + "'.");
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file, append))) {
             for (ClassTypeDescriptor testClass : testClasses) {
                 String sourceFileName = testClass.getSourceFileName();
                 String name = testClass.getName();
@@ -199,6 +199,7 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
                 String packageName = fullQualifiedName.substring(0, fullQualifiedName.length() - name.length());
                 String fullSourceName = packageName.replace('.', '/') + sourceFileName;
                 writer.println(fullSourceName);
+                LOGGER.info("\t" + testClass.getFullQualifiedName() + "(" + sourceFileName +")");
             }
         } catch (IOException e) {
             throw new ReportException("Cannot write tests to '" + file.getAbsolutePath() + "'", e);
