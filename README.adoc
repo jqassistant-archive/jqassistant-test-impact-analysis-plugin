@@ -61,7 +61,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
             </executions>
             <dependencies>
                 <dependency>                                                             <!--2-->
-                    <groupId>org.jqassistant.contrib.testsuite</groupId>
+                    <groupId>org.jqassistant.contrib.plugin</groupId>
                     <artifactId>jqassistant-test-impact-analysis-plugin</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
@@ -70,7 +70,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
     </plugins>
 </build>
 ----
-<1> Configures the directory where the jQAssistant testsuite plugin will create the files
+<1> Configures the directory where the jQAssistant test impact analysis plugin will create the files (one per artifact)
 <2> Declares the plugin as dependency for jQAssistant
 
 Furthermore profiles should be defined for making execution easier:
