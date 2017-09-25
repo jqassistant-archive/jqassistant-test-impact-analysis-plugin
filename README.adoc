@@ -219,7 +219,9 @@ The following two rules select integration tests by checking their name for the 
 [source,cypher,role=concept,requiresConcepts="test-impact-analysis:TestsAffectedByLastGitCommit",reportType="surefire-suite"]
 ----
 MATCH
-  (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
+  (:Maven:Project)-[:CREATES]->(artifact:Artifact)
+OPTIONAL MATCH
+  (artifact)-[:CONTAINS]->(test:Affected:Test)
 WHERE
   test.name ends with "IT"                             // <2>
 RETURN
@@ -230,7 +232,9 @@ RETURN
 [source,cypher,role=concept,requiresConcepts="test-impact-analysis:TestsAffectedByCurrentGitBranch",reportType="surefire-suite"]
 ----
 MATCH
-  (artifact:Artifact)-[:CONTAINS]->(test:Affected:Test)
+  (:Maven:Project)-[:CREATES]->(artifact:Artifact)
+OPTIONAL MATCH
+  (artifact)-[:CONTAINS]->(test:Affected:Test)
 WHERE
   test.name ends with "IT"
 RETURN
@@ -239,7 +243,7 @@ RETURN
 ....
 <1> Declares the concept for integration tests affected by the last Git commit
 <2> The filter clause for test classes having a name with the suffix "IT"
-<3> Declares the concept for integration tests affected by commit within the current Git branch
+<3> Declares the concept for integration tests affected by commits within the current Git branch
 
 The result of the concepts are reported as "surefire-suite".
 This report type requires each row to provide two columns:
