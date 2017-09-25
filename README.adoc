@@ -54,7 +54,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                             </scanInclude>
                         </scanIncludes>
                         <reportProperties>                                               <!--1-->
-                            <testimpactanalysis.report.directory>${session.executionRootDirectory}/target/testimpactanalysis</testimpactanalysis.report.directory>
+                            <testImpactAnalysis.report.directory>${session.executionRootDirectory}/target/testimpactanalysis</testImpactAnalysis.report.directory>
                         </reportProperties>
                     </configuration>
                 </execution>

@@ -68,8 +68,8 @@ public class SurefireSuiteReportPluginTest {
         Properties reportProperties = new Properties();
         Result<? extends ExecutableRule> result = getResult(rows, reportProperties);
         Map<String, Object> configuration = getConfiguration();
-        configuration.put("testimpactanalysis.surefire.artifactColumn", "a");
-        configuration.put("testimpactanalysis.surefire.testsColumn", "t");
+        configuration.put("testImpactAnalysis.surefire.artifactColumn", "a");
+        configuration.put("testImpactAnalysis.surefire.testsColumn", "t");
         plugin.configure(configuration);
 
         plugin.setResult(result);
@@ -102,7 +102,7 @@ public class SurefireSuiteReportPluginTest {
         Properties reportProperties = new Properties();
         Result<? extends ExecutableRule> result = getResult(rows, reportProperties);
         Map<String, Object> configuration = getConfiguration();
-        configuration.put("testimpactanalysis.surefire.file", "tests");
+        configuration.put("testImpactAnalysis.surefire.file", "tests");
         plugin.configure(configuration);
 
         plugin.setResult(result);
@@ -148,7 +148,7 @@ public class SurefireSuiteReportPluginTest {
 
     private Map<String, Object> getConfiguration() throws ReportException {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("testimpactanalysis.report.directory", REPORT_DIRECTORY.getAbsolutePath());
+        properties.put("testImpactAnalysis.report.directory", REPORT_DIRECTORY.getAbsolutePath());
         return properties;
     }
 

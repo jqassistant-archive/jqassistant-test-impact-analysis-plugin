@@ -27,10 +27,10 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
     static final String REPORT_ID = "surefire-suite";
     private static final Logger LOGGER = LoggerFactory.getLogger(SurefireSuiteReportPlugin.class);
 
-    private static final String PROPERTY_DIRECTORY = "testimpactanalysis.report.directory";
-    private static final String PROPERTY_ARTIFACT_COLUMN = "testimpactanalysis.surefire.artifactColumn";
-    private static final String PROPERTY_TESTS_COLUMN = "testimpactanalysis.surefire.testsColumn";
-    private static final String PROPERTY_REPORT_FILE = "testimpactanalysis.surefire.file";
+    private static final String PROPERTY_DIRECTORY = "testImpactAnalysis.report.directory";
+    private static final String PROPERTY_ARTIFACT_COLUMN = "testImpactAnalysis.surefire.artifactColumn";
+    private static final String PROPERTY_TESTS_COLUMN = "testImpactAnalysis.surefire.testsColumn";
+    private static final String PROPERTY_REPORT_FILE = "testImpactAnalysis.surefire.file";
 
     private static final String DEFAULT_DIRECTORY = "jqassistant/report/testimpactanalysis";
     private static final String DEFAULT_ARTIFACT_COLUMN = "Artifact";
