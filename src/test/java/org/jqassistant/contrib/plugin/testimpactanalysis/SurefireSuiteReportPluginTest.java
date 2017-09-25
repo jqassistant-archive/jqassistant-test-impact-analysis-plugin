@@ -62,6 +62,22 @@ public class SurefireSuiteReportPluginTest {
     }
 
     @Test
+    public void ambiguousArtifacts() throws ReportException, IOException {
+        List<Map<String, Object>> rows = new ArrayList<>();
+        rows.add(createRow("Artifact", "artifact", "Tests", Artifact1Test1.class));
+        rows.add(createRow("Artifact", "artifact", "Tests", Artifact1Test2.class));
+        Result<? extends ExecutableRule> result = getResult(rows, new Properties());
+        plugin.configure(getConfiguration());
+
+        plugin.setResult(result);
+
+        List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "artifact");
+        assertThat(artifact1Testsuite.size(), equalTo(2));
+        assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
+        assertThat(artifact1Testsuite.get(1), equalTo(getExpectedSourceFileName(Artifact1Test2.class)));
+    }
+
+    @Test
     public void customColumns() throws ReportException, IOException {
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(createRow("a", "artifact", "t", Artifact1Test1.class));
@@ -96,9 +112,10 @@ public class SurefireSuiteReportPluginTest {
     }
 
     @Test
-    public void reportFile() throws ReportException, IOException {
+    public void customReportFile() throws ReportException, IOException {
         List<Map<String, Object>> rows = new ArrayList<>();
-        rows.add(createRow("Artifact", "artifact1", "Tests", Artifact1Test1.class, Artifact1Test2.class, Artifact2Test1.class));
+        rows.add(createRow("Artifact", "artifact1", "Tests", Artifact1Test1.class, Artifact1Test2.class));
+        rows.add(createRow("Artifact", "artifact2", "Tests", Artifact2Test1.class));
         Properties reportProperties = new Properties();
         Result<? extends ExecutableRule> result = getResult(rows, reportProperties);
         Map<String, Object> configuration = getConfiguration();

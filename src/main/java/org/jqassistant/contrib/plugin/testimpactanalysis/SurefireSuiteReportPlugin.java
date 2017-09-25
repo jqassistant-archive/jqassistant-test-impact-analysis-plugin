@@ -197,9 +197,9 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
                 String name = testClass.getName();
                 String fullQualifiedName = testClass.getFullQualifiedName();
                 String packageName = fullQualifiedName.substring(0, fullQualifiedName.length() - name.length());
-                String fullSourceName = packageName.replace('.', '/') + sourceFileName;
-                writer.println(fullSourceName);
-                LOGGER.info("\t" + testClass.getFullQualifiedName() + "(" + sourceFileName +")");
+                String fullSourceFileName = packageName.replace('.', '/') + sourceFileName;
+                writer.println(fullSourceFileName);
+                LOGGER.info("\t" + testClass.getFullQualifiedName() + " (" + fullSourceFileName+")");
             }
         } catch (IOException e) {
             throw new ReportException("Cannot write tests to '" + file.getAbsolutePath() + "'", e);
