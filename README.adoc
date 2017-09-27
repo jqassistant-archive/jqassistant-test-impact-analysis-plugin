@@ -253,6 +253,19 @@ Artifact::
 Tests::
   The collection of affected tests for the artifact.
 
+== Known Problems
+
+* The following error may occur while creating a branch test suite:
+----
+Analysis failed.: Cannot execute query for rule 'Concept{id='test-impact-analysis:ChangeCommitsInCurrentGitBranch', description='Adds a label 'Change' to all commits in the current Git branch which are not included in the base branch.', ruleSource=META-INF/jqassistant-rules/test-impact-analysis.xml}'. All parts of the pattern must either directly or indirectly be connected to at least one bound entity. These identifiers were found to be disconnected:   UNNAMED322, baseBranch, baseHead -> [Help 1]
+----
+
+The problem is caused by the `shortestPath` function in Neo4j v2 and can be solved by switching jQAssistant to use Neo4j v3:
+
+----
+mvn clean verify -Pcreate-branch-suite -Djqassistant.neo4jVersion=3
+----
+
 == Feedback
 
 Please report any issues https://github.com/jqassistant-contrib/jqassistant-test-impact-analysis-plugin/issues[here].

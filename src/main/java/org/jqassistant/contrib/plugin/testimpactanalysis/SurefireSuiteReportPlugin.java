@@ -190,7 +190,7 @@ public class SurefireSuiteReportPlugin implements ReportPlugin {
      *             If the file cannot be written.
      */
     private void writeTests(File file, boolean append, Iterable<ClassTypeDescriptor> testClasses) throws ReportException {
-        LOGGER.info((append ? "Appending " : "Writing " )+ " tests to '" + file.getPath() + "'.");
+        LOGGER.info((append ? "Appending" : "Writing" )+ " tests to '" + file.getPath() + "'.");
         try (PrintWriter writer = new PrintWriter(new FileWriter(file, append))) {
             for (ClassTypeDescriptor testClass : testClasses) {
                 String sourceFileName = testClass.getSourceFileName();

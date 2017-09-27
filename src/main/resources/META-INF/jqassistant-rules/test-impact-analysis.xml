@@ -79,12 +79,11 @@
     </concept>
 
 
-    <concept id="test-impact-analysis:TestsAffectedByCurrentGitBranch" severity="info">
+    <concept id="test-impact-analysis:ChangeCommitsInCurrentGitBranch" severity="info">
         <requiresConcept refId="test-impact-analysis:CurrentGitBranch" />
         <requiresConcept refId="test-impact-analysis:GitBaseCommit" />
-        <requiresConcept refId="junit4:TestClass" />
         <requiresParameter name="testImpactAnalysisGitBaseBranch" type="String" defaultValue="heads/master"/>
-        <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed by commits in the current Git branch.</description>
+        <description>Adds a label 'Change' to all commits in the current Git branch which are not included in the base branch.</description>
         <cypher><![CDATA[
             MATCH
               (branch:Branch:Current)-[:HAS_HEAD]->(branchHead:Commit),
@@ -105,8 +104,20 @@
               1
             UNWIND
               nodes(branchHistory) as commit
+            SET
+              commit:Change
+            RETURN
+              collect(commit.sha)
+        ]]></cypher>
+    </concept>
+
+    <concept id="test-impact-analysis:TestsAffectedByCurrentGitBranch" severity="info">
+        <requiresConcept refId="test-impact-analysis:ChangeCommitsInCurrentGitBranch" />
+        <requiresConcept refId="junit4:TestClass" />
+        <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed by commits in the current Git branch.</description>
+        <cypher><![CDATA[
             MATCH
-              (commit)-[:CONTAINS_CHANGE]->()-[:MODIFIES]->(sourceFile:File)
+              (commit:Commit:Change)-[:CONTAINS_CHANGE]->()-[:MODIFIES]->(sourceFile:File)
             WHERE
               sourceFile.relativePath ends with ".java"
             WITH
