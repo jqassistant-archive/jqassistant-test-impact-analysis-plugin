@@ -194,7 +194,9 @@ The following command triggers a build which only executes the tests which are d
 mvn verify -Prun-testsuite
 ----
 
-== Advanced: Selecting Specific Tests
+== Advanced Topics
+
+=== Selecting Specific Tests
 
 It is possible to select only specific tests to be included in the created test suite files, e.g. if only integration tests shall be executed using the http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin].
 Therefore a rule needs to be created using Cypher (Neo4j query language) which does the required filtering.
@@ -253,9 +255,31 @@ Artifact::
 Tests::
   The collection of affected tests for the artifact.
 
+== Configuration
+
+The Surefire Report plugin acceps several options that might be passed as `reportProperties` in the configuration section of the jQAssistant Maven plugin:
+
+[options="header"]
+|===
+| Property                                   | Description                                                                                                | Default
+| testImpactAnalysis.report.directory        | Specifies the directory where the test suite files will be written                                         | jqassistant/report
+| testImpactAnalysis.surefire.file           | If provided all affected test names will be written to one file with that name (relative to the directory) |
+| testImpactAnalysis.surefire.artifactColumn | The name of the column providing the artifact containing a test                                            | Artifact
+| testImpactAnalysis.surefire.testsColumn    | The name of the column providing the collection of tests for a specific artifact                           | Tests
+|===
+
+NOTE: The properties specifying the `artifactColumn` and `testColumn` must reflect the columns used in the `RETURN` clause of the query,
+e.g. by default 'RETURN artifact as Artifact, collect(test) as Tests'.
+
+== Limitations
+
+At the moment only tests having a direct relation to a changed class are considered.
+Evaluation of transitive relations is considered for a future release as well as inheritance hierarchies.
+
 == Known Problems
 
-* The following error may occur while creating a branch test suite:
+1. The following error may occur while creating a branch test suite:
+
 ----
 Analysis failed.: Cannot execute query for rule 'Concept{id='test-impact-analysis:ChangeCommitsInCurrentGitBranch', description='Adds a label 'Change' to all commits in the current Git branch which are not included in the base branch.', ruleSource=META-INF/jqassistant-rules/test-impact-analysis.xml}'. All parts of the pattern must either directly or indirectly be connected to at least one bound entity. These identifiers were found to be disconnected:   UNNAMED322, baseBranch, baseHead -> [Help 1]
 ----
