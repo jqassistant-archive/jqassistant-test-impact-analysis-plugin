@@ -1,28 +1,18 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
-import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.*;
+import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.OtherType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.SubType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.SuperType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.Type;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
-import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
-import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
-import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.*;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
 
 public class TestsAffectedByCurrentGitBranchTest extends AbstractTestImpactAnalysisRuleTest {
 
@@ -37,7 +27,6 @@ public class TestsAffectedByCurrentGitBranchTest extends AbstractTestImpactAnaly
     }
 
     @Test
-    @Ignore("Not yet implemented")
     public void superTypeChanged() throws Exception {
         verify(SuperType.class);
     }
@@ -45,6 +34,13 @@ public class TestsAffectedByCurrentGitBranchTest extends AbstractTestImpactAnaly
     @Override
     protected String getConcept() {
         return "test-impact-analysis:TestsAffectedByCurrentGitBranch";
+    }
+
+    @Override
+    protected Map<String, String> getConceptParameters() {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("testImpactAnalysisGitBaseBranch", "test-feature");
+        return parameters;
     }
 
     protected void createGitHistory(Class<?> changedType) {

@@ -31,9 +31,7 @@ public abstract class AbstractTestImpactAnalysisRuleTest extends AbstractJavaPlu
         scanClassPathDirectory("a1", getClassesDirectory(TestsAffectedByCurrentGitBranchTest.class));
         createGitHistory(changedType);
 
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("testImpactAnalysisGitBaseBranch","test-feature");
-        Result<Concept> result = applyConcept(getConcept(), parameters);
+        Result<Concept> result = applyConcept(getConcept(), getConceptParameters());
 
         assertThat(result.getStatus(), equalTo(SUCCESS));
         List<Map<String, Object>> rows = result.getRows();
@@ -55,6 +53,8 @@ public abstract class AbstractTestImpactAnalysisRuleTest extends AbstractJavaPlu
     }
 
     protected abstract String getConcept();
+
+    protected abstract Map<String,String> getConceptParameters();
 
     protected abstract void createGitHistory(Class<?> changedType);
 

@@ -1,4 +1,4 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.set.rules;
 
-public class OtherType extends SuperType {
+public class OtherType {
 }
