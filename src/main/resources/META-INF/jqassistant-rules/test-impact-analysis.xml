@@ -1,7 +1,7 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.3">
 
     <concept id="test-impact-analysis:CurrentGitBranch" severity="info">
-        <description>Determines the Git current branch and adds a label "Current".</description>
+        <description>Determines the Git current branch and adds a label 'Current'.</description>
         <cypher><![CDATA[
             MATCH
               (repository:Repository)-[:HAS_BRANCH]->(branch:Git:Branch)
@@ -27,12 +27,16 @@
               (:Branch:Current)-[:HAS_HEAD]->(:Commit)-[:CONTAINS_CHANGE]->()-[:MODIFIES]->(sourceFile:File)
             WHERE
               sourceFile.relativePath ends with ".java"
+            SET
+              sourceFile:Changed
             WITH
               sourceFile
             MATCH
               (artifact:Artifact)-[:CONTAINS]->(package:Package)-[:CONTAINS]->(type:Type)
             WHERE
               sourceFile.relativePath ends with (package.fileName + "/" + type.sourceFileName)
+            SET
+              type:Changed
             WITH
               artifact, type
             MATCH
@@ -44,7 +48,7 @@
             SET
               test:Affected
             RETURN
-              artifact as Artifact, collect(test) as Tests
+              artifact as Artifact, collect(distinct test) as Tests
         ]]></cypher>
     </concept>
 
@@ -83,7 +87,7 @@
         <requiresConcept refId="test-impact-analysis:CurrentGitBranch" />
         <requiresConcept refId="test-impact-analysis:GitBaseCommit" />
         <requiresParameter name="testImpactAnalysisGitBaseBranch" type="String" defaultValue="heads/master"/>
-        <description>Adds a label 'Change' to all commits in the current Git branch which are not included in the base branch.</description>
+        <description>Adds a label 'Changed' to source files that changed in the current Git branch which are not included in the base branch.</description>
         <cypher><![CDATA[
             MATCH
               (branch:Branch:Current)-[:HAS_HEAD]->(branchHead:Commit),
@@ -104,10 +108,14 @@
               1
             UNWIND
               nodes(branchHistory) as commit
+            WITH
+              commit
+            MATCH
+              (commit)-[:CONTAINS_CHANGE]->()-[:MODIFIES]->(sourceFile:File)
             SET
-              commit:Change
+              sourceFile:Changed
             RETURN
-              collect(commit.sha)
+              commit.sha, collect(sourceFile.relativePath)
         ]]></cypher>
     </concept>
 
@@ -117,7 +125,7 @@
         <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed by commits in the current Git branch.</description>
         <cypher><![CDATA[
             MATCH
-              (commit:Commit:Change)-[:CONTAINS_CHANGE]->()-[:MODIFIES]->(sourceFile:File)
+              (sourceFile:File:Changed)
             WHERE
               sourceFile.relativePath ends with ".java"
             WITH
@@ -126,6 +134,8 @@
               (artifact:Artifact)-[:CONTAINS]->(package:Package)-[:CONTAINS]->(type:Type)
             WHERE
               sourceFile.relativePath ends with (package.fileName + "/" + type.sourceFileName)
+            SET
+              type:Changed
             WITH
               artifact, type
             MATCH
@@ -137,7 +147,7 @@
             SET
               test:Affected
             RETURN
-              artifact as Artifact, collect(test) as Tests
+              artifact as Artifact, collect(distinct test) as Tests
         ]]></cypher>
     </concept>
 
