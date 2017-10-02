@@ -41,6 +41,8 @@
               changedType
             MATCH
               hierarchy=shortestPath((changedType:Type)-[:EXTENDS|IMPLEMENTS*0..]-(type:Type))
+            WITH
+              type, hierarchy
             WHERE
               all(t in nodes(hierarchy) WHERE (:Artifact)-[:CONTAINS]->(t))
             WITH
@@ -145,6 +147,8 @@
               changedType
             MATCH
               hierarchy=shortestPath((changedType:Type)-[:EXTENDS|IMPLEMENTS*0..]-(type:Type))
+            WITH
+              type, hierarchy
             WHERE
               all(t in nodes(hierarchy) WHERE (:Artifact)-[:CONTAINS]->(t))
             WITH
