@@ -7,7 +7,6 @@ import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.OtherType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.SubType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.SuperType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.Type;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;

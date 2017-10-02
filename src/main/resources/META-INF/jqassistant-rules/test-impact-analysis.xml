@@ -18,10 +18,9 @@
         ]]></cypher>
     </concept>
 
-    <concept id="test-impact-analysis:TestsAffectedByLastGitCommit" severity="info">
+    <concept id="test-impact-analysis:FilesChangedByLastGitCommit" severity="info">
         <requiresConcept refId="test-impact-analysis:CurrentGitBranch" />
-        <requiresConcept refId="junit4:TestClass" />
-        <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed in the last Git commit.</description>
+        <description>Adds a label 'Changed' to all Git files that have been changed in the last Git commit.</description>
         <cypher><![CDATA[
             MATCH
               (:Branch:Current)-[:HAS_HEAD]->(:Commit)-[:CONTAINS_CHANGE]->()-[:MODIFIES]->(sourceFile:File)
@@ -29,6 +28,17 @@
               sourceFile.relativePath ends with ".java"
             SET
               sourceFile:Changed
+        ]]></cypher>
+    </concept>
+
+    <concept id="test-impact-analysis:TypesChangedByLastGitCommit" severity="info">
+        <requiresConcept refId="test-impact-analysis:FilesChangedByLastGitCommit" />
+        <description>Adds a label 'Changed' to all Java types that have been changed in the last Git commit.</description>
+        <cypher><![CDATA[
+            MATCH
+              (sourceFile:Git:File:Changed)
+            WHERE
+              sourceFile.relativePath ends with ".java"
             WITH
               sourceFile
             MATCH
@@ -37,10 +47,18 @@
               sourceFile.relativePath ends with (package.fileName + "/" + changedType.sourceFileName)
             SET
               changedType:Changed
-            WITH
+            RETURN
               changedType
+        ]]></cypher>
+    </concept>
+
+    <concept id="test-impact-analysis:TestsAffectedByLastGitCommit" severity="info">
+        <requiresConcept refId="test-impact-analysis:TypesChangedByLastGitCommit" />
+        <requiresConcept refId="junit4:TestClass" />
+        <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed in the last Git commit.</description>
+        <cypher><![CDATA[
             MATCH
-              hierarchy=shortestPath((changedType:Type)-[:EXTENDS|IMPLEMENTS*0..]-(type:Type))
+              hierarchy=shortestPath((changedType:Type:Changed)-[:EXTENDS|IMPLEMENTS*0..]-(type:Type))
             WITH
               type, hierarchy
             WHERE
@@ -94,7 +112,7 @@
         <requiresConcept refId="test-impact-analysis:CurrentGitBranch" />
         <requiresConcept refId="test-impact-analysis:GitBaseCommit" />
         <requiresParameter name="testImpactAnalysisGitBaseBranch" type="String" defaultValue="heads/master"/>
-        <description>Adds a label 'Changed' to Git files that changed in the current branch which are not included in the base branch.</description>
+        <description>Adds a label 'Changed' to Git files that changed in the current branch.</description>
         <cypher><![CDATA[
             MATCH
               (branch:Branch:Current)-[:HAS_HEAD]->(branchHead:Commit),
@@ -126,10 +144,10 @@
         ]]></cypher>
     </concept>
 
-    <concept id="test-impact-analysis:TestsAffectedByCurrentGitBranch" severity="info">
+    <concept id="test-impact-analysis:TypesChangedByCurrentGitBranch" severity="info">
         <requiresConcept refId="test-impact-analysis:FilesChangedByCommitsInCurrentGitBranch" />
         <requiresConcept refId="junit4:TestClass" />
-        <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed by commits in the current Git branch.</description>
+        <description>Adds a label 'Changed' to Java types that changed in the current branch.</description>
         <cypher><![CDATA[
             MATCH
               (sourceFile:File:Changed)
@@ -143,10 +161,18 @@
               sourceFile.relativePath ends with (package.fileName + "/" + changedType.sourceFileName)
             SET
               changedType:Changed
-            WITH
+            RETURN
               changedType
+        ]]></cypher>
+    </concept>
+
+    <concept id="test-impact-analysis:TestsAffectedByCurrentGitBranch" severity="info">
+        <requiresConcept refId="test-impact-analysis:TypesChangedByCurrentGitBranch" />
+        <requiresConcept refId="junit4:TestClass" />
+        <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed by commits in the current Git branch.</description>
+        <cypher><![CDATA[
             MATCH
-              hierarchy=shortestPath((changedType:Type)-[:EXTENDS|IMPLEMENTS*0..]-(type:Type))
+              hierarchy=shortestPath((changedType:Type:Changed)-[:EXTENDS|IMPLEMENTS*0..]-(type:Type))
             WITH
               type, hierarchy
             WHERE
