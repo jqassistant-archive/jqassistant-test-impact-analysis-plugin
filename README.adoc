@@ -7,6 +7,18 @@ changes in the version control system, i.e. Git.
 The test suites are represented by files which can be passed as parameters to http://maven.apache.org/surefire/maven-surefire-plugin/[Maven Surefire Plugin]
 or http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin] via the http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#includesFile[includesFile] option.
 
+== How It Works
+
+The test impact analysis covers the following steps:
+
+1. Determine source files that have been changed in the Git repository by evaluating
+* the last commit in the current branch or
+* all commits in the current branch that are not contained in a given base (i.e. reference) branch
+2. Match the changed source files to their corresponding Java types (classes, interfaces, enumerations or annotations)
+3. Find JUnit test classes that have a dependency to these types and write their file names to test suite files.
+
+The plugin provides concepts (i.e. queries) and a report implementation for jQAssistant to perform these steps.
+
 == Prerequisites
 
 * Java 7 or higher
@@ -262,8 +274,13 @@ e.g. by default 'RETURN artifact as Artifact, collect(test) as Tests'.
 
 == Limitations
 
-At the moment only tests having a direct relation to a changed class are considered.
-Evaluation of transitive relations is considered for a future release as well as inheritance hierarchies.
+At the moment only test classes are detected having a direct dependency to
+
+* a changed type
+* any super type of a changed type (e.g. interfaces, super classes, etc.)
+* any derived class of a changed type
+
+Evaluation of transitive relations is considered for a future release.
 
 == Known Problems
 
@@ -283,3 +300,11 @@ mvn clean verify -Pcreate-branch-suite -Djqassistant.neo4jVersion=3
 
 Please report any issues https://github.com/jqassistant-contrib/jqassistant-test-impact-analysis-plugin/issues[here].
 
+== Thanks
+
+The plugin could not provide its functionality without the support of the following projects:
+
+* https://jqassistant.org[jQAssistant]
+* https://github.com/kontext-e/jqassistant-plugins[Git Plugin for jQAssistant]
+* https://neo4j.org[Neo4j]
+* https://maven.apache.org[Apache Maven]
