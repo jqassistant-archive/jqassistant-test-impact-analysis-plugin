@@ -293,14 +293,22 @@ Analysis failed.: Cannot execute query for rule 'Concept{id='test-impact-analysi
 The problem is caused by the `shortestPath` function in Neo4j v2 and can be solved by switching jQAssistant to use Neo4j v3:
 
 ----
-mvn clean verify -Pcreate-branch-suite -Djqassistant.neo4jVersion=3
+mvn clean verify -Pcreate-branch-testsuite -Djqassistant.neo4jVersion=3
+----
+
+For convenience this setting can be stored in a file in the top level module of the Maven project:
+
+.+++.mvn/maven.config+++
+[source]
+----
+-Djqassistant.neo4jVersion=3
 ----
 
 == Feedback
 
 Please report any issues https://github.com/jqassistant-contrib/jqassistant-test-impact-analysis-plugin/issues[here].
 
-== Thanks
+== Acknowledgements
 
 The plugin could not provide its functionality without the support of the following projects:
 
