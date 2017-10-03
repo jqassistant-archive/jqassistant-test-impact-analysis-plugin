@@ -2,10 +2,7 @@
 = jQAssistant Test Impact Analysis Plugin
 
 This project provides a http://jqassistant.org/[jQAssistant] plugin for dynamically generating test suites based on
-changes in the version control system, i.e. Git.
-
-The test suites are represented by files which can be passed as parameters to http://maven.apache.org/surefire/maven-surefire-plugin/[Maven Surefire Plugin]
-or http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin] via the http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#includesFile[includesFile] option.
+changes in the version control system (i.e. Git) and determining potential test gap.
 
 == How It Works
 
@@ -18,6 +15,9 @@ The test impact analysis covers the following steps:
 3. Find JUnit test classes that have a dependency to these types and write their file names to test suite files.
 
 The plugin provides concepts (i.e. queries) and a report implementation for jQAssistant to perform these steps.
+
+The test suites are represented by files which can be passed as parameters to http://maven.apache.org/surefire/maven-surefire-plugin/[Maven Surefire Plugin]
+or http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin] via the http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#includesFile[includesFile] option.
 
 == Prerequisites
 
@@ -195,9 +195,7 @@ The following command triggers a build which only executes the tests which are d
 mvn verify -Prun-testsuite
 ----
 
-== Advanced Topics
-
-=== Selecting Specific Tests
+== Selecting Specific Tests
 
 It is possible to select only specific tests to be included in the created test suite files, e.g. if only integration tests shall be executed using the http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin].
 Therefore a rule needs to be created using Cypher (Neo4j query language) which does the required filtering.
@@ -218,7 +216,7 @@ The following two rules select integration tests by checking their name for the 
 ....
 = My Rules
 
-[[my-rules:IntegrationTestsForLastGitCommit]]          // <1>
+[[my-rules:IntegrationTestsForLastGitCommit]]                                       // <1>
 [source,cypher,role=concept,requiresConcepts="test-impact-analysis:TestsAffectedByLastGitCommit",reportType="surefire-suite"]
 ----
 MATCH
@@ -226,12 +224,12 @@ MATCH
 OPTIONAL MATCH
   (artifact)-[:CONTAINS]->(test:Affected:Test)
 WHERE
-  test.name ends with "IT"                             // <2>
+  test.name ends with "IT"                                                          // <2>
 RETURN
   artifact as Artifact, collect(test) as Tests
 ----
 
-[[my-rules:IntegrationTestsForCurrentGitBranch]]       // <3>
+[[my-rules:IntegrationTestsForCurrentGitBranch]]                                    // <3>
 [source,cypher,role=concept,requiresConcepts="test-impact-analysis:TestsAffectedByCurrentGitBranch",reportType="surefire-suite"]
 ----
 MATCH
@@ -255,6 +253,40 @@ Artifact::
   The artifact where affected test classes are located.
 Tests::
   The collection of affected tests for the artifact.
+
+== Test Gap
+
+NOTE: This feature is considered experimental, <<feedback>> is highly appreciated.
+
+The plugin provides two additional constraints for test gap analysis.
+Both determine public methods of changed Java types that are not covered by JUnit test methods:
+
+test-impact-analysis:TestGapForLastGitCommit::
+  Determines changes from the last Git commit
+test-impact-analysis:TestGapForCurrentGitBranch::
+  Determines changes within the current Git branch
+
+The constraints may be verified from the command line:
+
+----
+mvn verify -Djqassistant.constraints=test-impact-analysis:TestGapForLastGitCommit
+----
+----
+mvn verify -Djqassistant.constraints=test-impact-analysis:TestGapForCurrentGitBranch
+----
+
+If jQAssistant is already used in the Maven project it is recommended to include the desired constraint in a group that is executed:
+
+.jqassistant/my-rules.adoc
+....
+= My Rules
+
+[[default]]
+[role=group,includesConstraints="test-impact-analysis:TestGapForCurrentGitBranch"]
+== Default Rules
+
+
+....
 
 == Configuration
 
@@ -304,6 +336,7 @@ For convenience this setting can be stored in a file in the top level module of 
 -Djqassistant.neo4jVersion=3
 ----
 
+[[feedback]]
 == Feedback
 
 Please report any issues https://github.com/jqassistant-contrib/jqassistant-test-impact-analysis-plugin/issues[here].

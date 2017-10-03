@@ -1,12 +1,12 @@
-package org.jqassistant.contrib.plugin.testimpactanalysis;
+package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.OtherType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.SubType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.SuperType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.Type;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SubType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SuperType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.Type;
 import org.junit.Test;
 
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
@@ -15,28 +15,24 @@ import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescrip
 
 public class TestsAffectedByCurrentGitBranchTest extends AbstractTestImpactAnalysisRuleTest {
 
+    private static final String CONCEPT = "test-impact-analysis:TestsAffectedByCurrentGitBranch";
+
     @Test
     public void typeChanged() throws Exception {
-        verify(Type.class);
+        verify(Type.class, CONCEPT, getRuleParameters());
     }
 
     @Test
     public void subTypeChanged() throws Exception {
-        verify(SubType.class);
+        verify(SubType.class, CONCEPT, getRuleParameters());
     }
 
     @Test
     public void superTypeChanged() throws Exception {
-        verify(SuperType.class);
+        verify(SuperType.class, CONCEPT, getRuleParameters());
     }
 
-    @Override
-    protected String getConcept() {
-        return "test-impact-analysis:TestsAffectedByCurrentGitBranch";
-    }
-
-    @Override
-    protected Map<String, String> getConceptParameters() {
+    private Map<String, String> getRuleParameters() {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("testImpactAnalysisGitBaseBranch", "test-feature");
         return parameters;

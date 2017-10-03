@@ -1,4 +1,4 @@
-package org.jqassistant.contrib.plugin.testimpactanalysis;
+package org.jqassistant.contrib.plugin.testimpactanalysis.report;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -14,9 +14,10 @@ import java.io.LineNumberReader;
 import java.util.*;
 
 import org.apache.commons.io.FileUtils;
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.report.Artifact1Test2;
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.report.Artifact2Test1;
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.report.Artifact1Test1;
+import org.jqassistant.contrib.plugin.testimpactanalysis.SurefireSuiteReportPlugin;
+import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact1Test2;
+import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact2Test1;
+import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact1Test1;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

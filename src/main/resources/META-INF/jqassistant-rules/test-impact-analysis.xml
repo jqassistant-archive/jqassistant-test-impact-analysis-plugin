@@ -186,4 +186,51 @@
         ]]></cypher>
         <report type="surefire-suite" />
     </concept>
+
+    <constraint id="test-impact-analysis:TestGapForLastGitCommit">
+        <requiresConcept refId="test-impact-analysis:TypesChangedByLastGitCommit" />
+        <requiresConcept refId="junit4:TestMethod" />
+        <requiresParameter name="testImpactAnalysisGapMethodVisibility" type="String" defaultValue="public"/>
+        <description>Public methods of Java types that changed in the last Git commit are not covered by test methods (experimental).</description>
+        <cypher><![CDATA[
+            WITH
+              split({testImpactAnalysisGapMethodVisibility},",") as visibilities
+            MATCH
+              (type:Changed)-[:DECLARES]->(method:Method)
+            WHERE
+              not method:Constructor
+              and method.visibility in visibilities
+              and not (:Test:Method)-[:INVOKES]->(method)
+            WITH
+              type, collect(method) as Methods
+            MATCH
+              (artifact:Artifact)-[:CONTAINS]->(type)
+            RETURN
+              artifact as Artifact, type as Type, Methods
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="test-impact-analysis:TestGapForCurrentGitBranch">
+        <requiresConcept refId="test-impact-analysis:TypesChangedByCurrentGitBranch" />
+        <requiresConcept refId="junit4:TestMethod" />
+        <requiresParameter name="testImpactAnalysisGapMethodVisibility" type="String" defaultValue="public"/>
+        <description>Public methods of Java types that changed in the current Git branch are not covered by test methods (experimental).</description>
+        <cypher><![CDATA[
+            WITH
+              split({testImpactAnalysisGapMethodVisibility},",") as visibilities
+            MATCH
+              (type:Changed)-[:DECLARES]->(method:Method)
+            WHERE
+              not method:Constructor
+              and method.visibility in visibilities
+              and not (:Test:Method)-[:INVOKES]->(method)
+            WITH
+              type, collect(method) as Methods
+            MATCH
+              (artifact:Artifact)-[:CONTAINS]->(type)
+            RETURN
+              artifact as Artifact, type as Type, Methods
+        ]]></cypher>
+    </constraint>
+
 </jqa:jqassistant-rules>

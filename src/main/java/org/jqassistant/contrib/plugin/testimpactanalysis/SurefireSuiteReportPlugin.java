@@ -24,7 +24,7 @@ import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
  */
 public class SurefireSuiteReportPlugin implements ReportPlugin {
 
-    static final String REPORT_ID = "surefire-suite";
+    public static final String REPORT_ID = "surefire-suite";
     private static final Logger LOGGER = LoggerFactory.getLogger(SurefireSuiteReportPlugin.class);
 
     private static final String PROPERTY_DIRECTORY = "testImpactAnalysis.report.directory";

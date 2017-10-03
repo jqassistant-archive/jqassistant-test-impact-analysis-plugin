@@ -1,12 +1,11 @@
-package org.jqassistant.contrib.plugin.testimpactanalysis;
+package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 
 import java.util.Collections;
-import java.util.Map;
 
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.OtherType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.SubType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.SuperType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.set.rules.Type;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SubType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SuperType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.Type;
 import org.junit.Test;
 
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
@@ -15,29 +14,21 @@ import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescrip
 
 public class TestsAffectedByLastGitCommitTest extends AbstractTestImpactAnalysisRuleTest {
 
+    private static final String CONCEPT = "test-impact-analysis:TestsAffectedByLastGitCommit";
+
     @Test
     public void typeChanged() throws Exception {
-        verify(Type.class);
+        verify(Type.class, CONCEPT, Collections.<String, String> emptyMap());
     }
 
     @Test
     public void subTypeChanged() throws Exception {
-        verify(SubType.class);
+        verify(SubType.class, CONCEPT, Collections.<String, String> emptyMap());
     }
 
     @Test
     public void superTypeChanged() throws Exception {
-        verify(SuperType.class);
-    }
-
-    @Override
-    protected String getConcept() {
-        return "test-impact-analysis:TestsAffectedByLastGitCommit";
-    }
-
-    @Override
-    protected Map<String, String> getConceptParameters() {
-        return Collections.emptyMap();
+        verify(SuperType.class, CONCEPT, Collections.<String, String> emptyMap());
     }
 
     protected void createGitHistory(Class<?> changedType) {

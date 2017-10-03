@@ -1,4 +1,4 @@
-package org.jqassistant.contrib.plugin.testimpactanalysis.set.rules;
+package org.jqassistant.contrib.plugin.testimpactanalysis.impact.set;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
