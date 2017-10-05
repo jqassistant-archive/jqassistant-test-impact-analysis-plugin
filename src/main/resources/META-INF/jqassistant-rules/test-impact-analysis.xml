@@ -191,7 +191,7 @@
         <requiresConcept refId="test-impact-analysis:TypesChangedByLastGitCommit" />
         <requiresConcept refId="junit4:TestMethod" />
         <requiresParameter name="testImpactAnalysisGapMethodVisibility" type="String" defaultValue="public"/>
-        <description>Public methods of Java types that changed in the last Git commit are not covered by test methods (experimental).</description>
+        <description>Public methods of Java types that changed in the last Git commit which are not covered by test methods (experimental).</description>
         <cypher><![CDATA[
             WITH
               split({testImpactAnalysisGapMethodVisibility},",") as visibilities
@@ -214,7 +214,7 @@
         <requiresConcept refId="test-impact-analysis:TypesChangedByCurrentGitBranch" />
         <requiresConcept refId="junit4:TestMethod" />
         <requiresParameter name="testImpactAnalysisGapMethodVisibility" type="String" defaultValue="public"/>
-        <description>Public methods of Java types that changed in the current Git branch are not covered by test methods (experimental).</description>
+        <description>Public methods of Java types that changed in the current Git branch which are not covered by test methods (experimental).</description>
         <cypher><![CDATA[
             WITH
               split({testImpactAnalysisGapMethodVisibility},",") as visibilities
