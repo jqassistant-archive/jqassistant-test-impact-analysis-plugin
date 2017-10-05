@@ -64,7 +64,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                 <dependency>                                                             <!--2-->
                     <groupId>org.jqassistant.contrib.plugin</groupId>
                     <artifactId>jqassistant-test-impact-analysis-plugin</artifactId>
-                    <version>1.0.0-RC1</version>
+                    <version>1.0.0-RC2</version>
                 </dependency>
             </dependencies>
         </plugin>
@@ -259,7 +259,7 @@ Tests::
 NOTE: This feature is considered experimental, <<feedback>> is highly appreciated.
 
 The plugin provides two additional constraints for test gap analysis.
-Both determine public methods of changed Java types that are not covered by JUnit test methods:
+Both determine public methods of changed Java types that are not invoked by JUnit test methods:
 
 test-impact-analysis:TestGapForLastGitCommit::
   Determines changes from the last Git commit
@@ -285,8 +285,8 @@ If jQAssistant is already used in the Maven project it is recommended to include
 [role=group,includesConstraints="test-impact-analysis:TestGapForCurrentGitBranch"]
 == Default Rules
 
-
 ....
+
 
 == Configuration
 
