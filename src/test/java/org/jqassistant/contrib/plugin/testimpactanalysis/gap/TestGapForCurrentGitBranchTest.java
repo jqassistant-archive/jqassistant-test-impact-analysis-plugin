@@ -13,7 +13,7 @@ public class TestGapForCurrentGitBranchTest extends AbstractTestGapTest {
     @Test
     public void gapForLastCommit() throws Exception {
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("testImpactAnalysisGitBaseBranch", "test-feature");
+        parameters.put("testImpactAnalysisGitBaseBranch", "develop");
         verify("test-impact-analysis:TestGapForCurrentGitBranch", parameters);
     }
 

@@ -34,7 +34,7 @@ public class TestsAffectedByCurrentGitBranchTest extends AbstractTestImpactAnaly
 
     private Map<String, String> getRuleParameters() {
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("testImpactAnalysisGitBaseBranch", "test-feature");
+        parameters.put("testImpactAnalysisGitBaseBranch", "develop");
         return parameters;
     }
 

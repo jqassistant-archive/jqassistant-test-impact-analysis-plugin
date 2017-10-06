@@ -287,7 +287,6 @@ If jQAssistant is already used in the Maven project it is recommended to include
 
 ....
 
-
 == Configuration
 
 The Surefire Report plugin accepts several options that might be passed as `reportProperties` in the configuration section of the jQAssistant Maven plugin:

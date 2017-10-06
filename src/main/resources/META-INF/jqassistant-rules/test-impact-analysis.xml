@@ -97,24 +97,25 @@
         <description>Adds a label 'Changed' to Git files that changed in the current branch.</description>
         <cypher><![CDATA[
             MATCH
-              (branch:Branch:Current)-[:HAS_HEAD]->(branchHead:Commit),
-              branchHistory=shortestPath((base:Commit:Base)<-[:HAS_PARENT*]-(branchHead))
+              (currentBranch:Branch:Current)-[:HAS_HEAD]->(currentBranchHead:Commit),
+              currentBranchHistory=shortestPath((base:Commit:Base)<-[:HAS_PARENT*]-(currentBranchHead))
             WHERE
-              branchHead <> base
+              currentBranchHead <> base
             WITH
-              base, branchHistory
+              currentBranch, currentBranchHistory, base
             MATCH
               (baseBranch:Branch)-[:HAS_HEAD]->(baseHead:Commit),
               baseHistory=shortestPath((base)<-[:HAS_PARENT*]-(baseHead))
             WHERE
               baseBranch.name ends with {testImpactAnalysisGitBaseBranch}
+              and currentBranch <> baseBranch
               and baseHead <> base
             WITH
-              branchHistory
+              currentBranchHistory
             LIMIT
               1
             UNWIND
-              nodes(branchHistory) as commit
+              nodes(currentBranchHistory) as commit
             WITH
               commit
             MATCH
