@@ -48,8 +48,8 @@
             WITH
               type
             MATCH
-              (testArtifact:Artifact)-[:CONTAINS]->(testPackage:Package)-[:CONTAINS]->(test:Class),
-              (test)-[:EXTENDS|IMPLEMENTS*0..]->(:Test:Class)-[:DEPENDS_ON*0..1]->(type:Type)
+              (testArtifact:Artifact)-[:CONTAINS]->(testPackage:Package)-[:CONTAINS]->(test:Test:Class),
+              (test)-[:EXTENDS|IMPLEMENTS*0..]->(:Class)-[:DEPENDS_ON*0..1]->(type:Type)
             WHERE NOT
               (exists(test.abstract) and test.abstract)
             SET
@@ -163,8 +163,8 @@
             WITH
               type
             MATCH
-              (testArtifact:Artifact)-[:CONTAINS]->(testPackage:Package)-[:CONTAINS]->(test:Class),
-              (test)-[:EXTENDS|IMPLEMENTS*0..]->(:Test:Class)-[:DEPENDS_ON*0..1]->(type:Type)
+              (testArtifact:Artifact)-[:CONTAINS]->(testPackage:Package)-[:CONTAINS]->(test:Test:Class),
+              (test)-[:EXTENDS|IMPLEMENTS*0..]->(:Class)-[:DEPENDS_ON*0..1]->(type:Type)
             WHERE NOT
               (exists(test.abstract) and test.abstract)
             SET

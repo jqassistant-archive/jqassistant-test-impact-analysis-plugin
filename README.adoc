@@ -197,9 +197,10 @@ mvn verify -Prun-testsuite
 
 == Selecting Specific Tests
 
-It is possible to select only specific tests to be included in the created test suite files, e.g. if only integration tests shall be executed using the http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin].
-Therefore a rule needs to be created using Cypher (Neo4j query language) which does the required filtering.
-The rule can be loaded by jQAssistant from Asciidoc or XML files located in the folder "jqassistant" in the root module of the Maven project:
+It is possible to select only specific tests to be included in the test suite files.
+Therefore specific rules can be created using Cypher (Neo4j query language) which perform required filtering.
+The rules must be located in a file that can be interpreted by jQAssistant.
+Allowed formats are Asciidoc or XML, the files must be located in the folder "jqassistant" in the root module of the Maven project:
 
 .Example project structure
 ----
@@ -210,7 +211,10 @@ my-project/
           /pom.xml
 ----
 
-The following two rules select integration tests by checking their name for the suffix "IT":
+=== Integration Tests
+
+A case might be that only integration tests shall be selected for execution by the the http://maven.apache.org/surefire/maven-failsafe-plugin/[Maven Failsafe Plugin].
+The following two rules select test classes by checking their name for the suffix "IT":
 
 .jqassistant/my-rules.adoc
 ....
@@ -253,6 +257,49 @@ Artifact::
   The artifact where affected test classes are located.
 Tests::
   The collection of affected tests for the artifact.
+
+For activating the rules the above described Maven profiles need to be adopted accordingly.
+
+=== Impact On Artifacts
+
+For projects consisting of multiple Maven modules it might be interesting to select all tests in Maven modules that
+depend on modules where Java types have been changed.
+The according rules would be as follows:
+
+.jqassistant/my-rules.adoc
+....
+= My Rules
+
+[[my-rules:TestsInAffectedArtifactsForLastGitCommit]]
+[source,cypher,role=concept,requiresConcepts="test-impact-analysis:TypesChangedByLastGitCommit,junit4:TestClass",reportType="surefire-suite"]
+----
+MATCH
+  (:Maven:Project)-[:CREATES]->(artifact:Artifact)-[:CONTAINS]->(:Type:Changed),
+  (:Maven:Project)-[:CREATES]->(affectedArtifact:Artifact),
+  shortestPath((affectedArtifact)-[:DEPENDS_ON*0..]->(artifact))
+WITH
+  affectedArtifact
+MATCH
+  (affectedArtifact)-[:CONTAINS]->(test:Type:Test)
+RETURN
+  affectedArtifact as Artifact, collect(test) as Tests
+----
+
+[[my-rules:TestsInAffectedArtifactsForCurrentGitBranch]]
+[source,cypher,role=concept,requiresConcepts="test-impact-analysis:TypesChangedByCurrentGitBranch,junit4:TestClass",reportType="surefire-suite"]
+----
+MATCH
+  (:Maven:Project)-[:CREATES]->(artifact:Artifact)-[:CONTAINS]->(:Type:Changed),
+  (:Maven:Project)-[:CREATES]->(affectedArtifact:Artifact),
+  shortestPath((affectedArtifact)-[:DEPENDS_ON*0..]->(artifact))
+WITH
+  affectedArtifact
+MATCH
+  (affectedArtifact)-[:CONTAINS]->(test:Type:Test)
+RETURN
+  affectedArtifact as Artifact, collect(test) as Tests
+----
+....
 
 == Test Gap
 
