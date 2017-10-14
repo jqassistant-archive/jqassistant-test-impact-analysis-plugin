@@ -222,6 +222,7 @@ The following two rules select test classes by checking their name for the suffi
 
 [[my-rules:IntegrationTestsForLastGitCommit]]                                       // <1>
 [source,cypher,role=concept,requiresConcepts="test-impact-analysis:TestsAffectedByLastGitCommit",reportType="surefire-suite"]
+.Reports all integration test classes affected by the last Git commit.
 ----
 MATCH
   (:Maven:Project)-[:CREATES]->(artifact:Artifact)
@@ -235,6 +236,7 @@ RETURN
 
 [[my-rules:IntegrationTestsForCurrentGitBranch]]                                    // <3>
 [source,cypher,role=concept,requiresConcepts="test-impact-analysis:TestsAffectedByCurrentGitBranch",reportType="surefire-suite"]
+.Reports all integration test classes affected by commits in the current Git branch.
 ----
 MATCH
   (:Maven:Project)-[:CREATES]->(artifact:Artifact)
@@ -272,6 +274,7 @@ The according rules would be as follows:
 
 [[my-rules:TestsInAffectedArtifactsForLastGitCommit]]
 [source,cypher,role=concept,requiresConcepts="test-impact-analysis:TypesChangedByLastGitCommit,junit4:TestClass",reportType="surefire-suite"]
+.Reports all test classes of artifacts affected by the last Git commit.
 ----
 MATCH
   (:Maven:Project)-[:CREATES]->(artifact:Artifact)-[:CONTAINS]->(:Type:Changed),
@@ -287,6 +290,7 @@ RETURN
 
 [[my-rules:TestsInAffectedArtifactsForCurrentGitBranch]]
 [source,cypher,role=concept,requiresConcepts="test-impact-analysis:TypesChangedByCurrentGitBranch,junit4:TestClass",reportType="surefire-suite"]
+.Reports all test classes of artifacts affected by commits in the current Git branch.
 ----
 MATCH
   (:Maven:Project)-[:CREATES]->(artifact:Artifact)-[:CONTAINS]->(:Type:Changed),
