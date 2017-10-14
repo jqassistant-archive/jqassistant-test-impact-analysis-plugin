@@ -280,7 +280,7 @@ MATCH
   (:Maven:Project)-[:CREATES]->(artifact:Artifact)-[:CONTAINS]->(:Type:Changed),
   (:Maven:Project)-[:CREATES]->(affectedArtifact:Artifact),
   shortestPath((affectedArtifact)-[:DEPENDS_ON*0..]->(artifact))
-WITH
+WITH DISTINCT
   affectedArtifact
 MATCH
   (affectedArtifact)-[:CONTAINS]->(test:Type:Test)
@@ -296,7 +296,7 @@ MATCH
   (:Maven:Project)-[:CREATES]->(artifact:Artifact)-[:CONTAINS]->(:Type:Changed),
   (:Maven:Project)-[:CREATES]->(affectedArtifact:Artifact),
   shortestPath((affectedArtifact)-[:DEPENDS_ON*0..]->(artifact))
-WITH
+WITH DISTINCT
   affectedArtifact
 MATCH
   (affectedArtifact)-[:CONTAINS]->(test:Type:Test)

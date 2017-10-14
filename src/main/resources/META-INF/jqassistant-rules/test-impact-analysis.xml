@@ -98,6 +98,7 @@
         <requiresParameter name="testImpactAnalysisGitBaseBranch" type="String" defaultValue="heads/master"/>
         <description>Adds a label 'Changed' to Git files that changed in the current branch.</description>
         <cypher><![CDATA[
+            // Identify base commits reachable from current branch
             MATCH
               (currentBranch:Branch:Current)-[:HAS_HEAD]->(currentBranchHead:Commit),
               currentBranchHistory=shortestPath((base:Commit:Base)<-[:HAS_PARENT*]-(currentBranchHead))
@@ -105,6 +106,9 @@
               currentBranchHead <> base
             WITH
               currentBranch, currentBranchHistory, base
+            ORDER BY
+              base.epoch desc
+            // Find first base commit that is reachable from selected base branch
             MATCH
               baseHistory=shortestPath((base)-[:HAS_HEAD|HAS_PARENT*]-(baseBranch:Branch))
             WHERE
@@ -114,6 +118,7 @@
               currentBranchHistory
             LIMIT
               1
+            // Use commits for determining changed files
             UNWIND
               tail(nodes(currentBranchHistory)) as commit
             WITH
