@@ -22,7 +22,6 @@ abstract class AbstractTestImpactAnalysisRuleTest extends AbstractGitRuleTest {
 
     protected void verify(Class<?> changedType, String concept, Map<String, String> parameters) throws Exception {
         scanClassPathDirectory("a1", getClassesDirectory(TestsAffectedByCurrentGitBranchTest.class));
-        createGitHistory(changedType);
 
         Result<Concept> result = applyConcept(concept, parameters);
 

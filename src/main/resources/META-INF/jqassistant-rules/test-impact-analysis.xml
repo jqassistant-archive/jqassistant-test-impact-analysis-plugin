@@ -77,7 +77,9 @@
         <description>Adds a label 'Base' to all commits with more than one child commits (i.e. commits where a branch is split off).</description>
         <cypher><![CDATA[
             MATCH
-              (child:Commit)-[p:HAS_PARENT]->(branchBase:Commit)
+              (child)-[:HAS_PARENT|HAS_HEAD]->(branchBase:Commit)
+            WHERE
+              child:Commit or child:Branch
             WITH
               branchBase, count(child) as children
             WHERE
@@ -104,18 +106,16 @@
             WITH
               currentBranch, currentBranchHistory, base
             MATCH
-              (baseBranch:Branch)-[:HAS_HEAD]->(baseHead:Commit),
-              baseHistory=shortestPath((base)<-[:HAS_PARENT*]-(baseHead))
+              baseHistory=shortestPath((base)-[:HAS_HEAD|HAS_PARENT*]-(baseBranch:Branch))
             WHERE
               baseBranch.name ends with {testImpactAnalysisGitBaseBranch}
               and currentBranch <> baseBranch
-              and baseHead <> base
             WITH
               currentBranchHistory
             LIMIT
               1
             UNWIND
-              nodes(currentBranchHistory) as commit
+              tail(nodes(currentBranchHistory)) as commit
             WITH
               commit
             MATCH
@@ -123,7 +123,7 @@
             SET
               sourceFile:Changed
             RETURN
-              commit.sha, collect(sourceFile.relativePath)
+              commit as Commit, collect(sourceFile.relativePath) as FilesChangedByCommit
         ]]></cypher>
     </concept>
 

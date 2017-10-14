@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleTest;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.TestsAffectedByCurrentGitBranchTest;
 import org.jqassistant.contrib.plugin.testimpactanalysis.gap.set.Type;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.TestsAffectedByCurrentGitBranchTest;
 
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
@@ -45,4 +45,5 @@ public abstract class AbstractTestGapTest extends AbstractGitRuleTest {
 
     }
 
+    protected abstract void createGitHistory(Class<?> changedType);
 }

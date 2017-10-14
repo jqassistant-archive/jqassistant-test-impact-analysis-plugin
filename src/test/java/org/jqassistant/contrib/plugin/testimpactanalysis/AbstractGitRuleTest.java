@@ -8,7 +8,7 @@ import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitFileDescriptor;
 
 public abstract class AbstractGitRuleTest extends AbstractJavaPluginIT {
 
-    private String getSourceFileName(Class<?> type) {
+    protected String getSourceFileName(Class<?> type) {
         String sourceDirectory = "/src/test/java/";
         return sourceDirectory + type.getName().replace('.', '/') + ".java";
     }
@@ -24,7 +24,5 @@ public abstract class AbstractGitRuleTest extends AbstractJavaPluginIT {
         }
         return commit;
     }
-
-    protected abstract void createGitHistory(Class<?> changedType);
 
 }

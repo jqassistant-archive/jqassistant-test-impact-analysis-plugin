@@ -19,16 +19,19 @@ public class TestsAffectedByCurrentGitBranchTest extends AbstractTestImpactAnaly
 
     @Test
     public void typeChanged() throws Exception {
+        createGitHistory(Type.class);
         verify(Type.class, CONCEPT, getRuleParameters());
     }
 
     @Test
     public void subTypeChanged() throws Exception {
+        createGitHistory(SubType.class);
         verify(SubType.class, CONCEPT, getRuleParameters());
     }
 
     @Test
     public void superTypeChanged() throws Exception {
+        createGitHistory(SuperType.class);
         verify(SuperType.class, CONCEPT, getRuleParameters());
     }
 
@@ -38,11 +41,11 @@ public class TestsAffectedByCurrentGitBranchTest extends AbstractTestImpactAnaly
         return parameters;
     }
 
-    protected void createGitHistory(Class<?> changedType) {
+    private void createGitHistory(Class<?> changedType) {
         store.beginTransaction();
         GitRepositoryDescriptor repository = store.create(GitRepositoryDescriptor.class);
         GitCommitDescriptor developHead = createCommit(OtherType.class);
-        GitCommitDescriptor base = createCommit();
+        GitCommitDescriptor base = createCommit(OtherType.class);
         developHead.getParents().add(base);
         GitBranchDescriptor developBranch = store.create(GitBranchDescriptor.class);
         developBranch.setName("heads/develop");

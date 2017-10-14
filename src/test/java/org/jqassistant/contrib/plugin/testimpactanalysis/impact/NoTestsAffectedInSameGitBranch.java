@@ -42,7 +42,7 @@ public class NoTestsAffectedInSameGitBranch extends AbstractGitRuleTest {
         store.commitTransaction();
     }
 
-    protected void createGitHistory(Class<?> changedType) {
+    private void createGitHistory(Class<?> changedType) {
         store.beginTransaction();
         GitRepositoryDescriptor repository = store.create(GitRepositoryDescriptor.class);
 

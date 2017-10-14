@@ -18,20 +18,23 @@ public class TestsAffectedByLastGitCommitTest extends AbstractTestImpactAnalysis
 
     @Test
     public void typeChanged() throws Exception {
+        createGitHistory(Type.class);
         verify(Type.class, CONCEPT, Collections.<String, String> emptyMap());
     }
 
     @Test
     public void subTypeChanged() throws Exception {
+        createGitHistory(SubType.class);
         verify(SubType.class, CONCEPT, Collections.<String, String> emptyMap());
     }
 
     @Test
     public void superTypeChanged() throws Exception {
+        createGitHistory(SuperType.class);
         verify(SuperType.class, CONCEPT, Collections.<String, String> emptyMap());
     }
 
-    protected void createGitHistory(Class<?> changedType) {
+    private void createGitHistory(Class<?> changedType) {
         store.beginTransaction();
         GitCommitDescriptor head = createCommit(changedType);
         GitCommitDescriptor parent = createCommit(OtherType.class);
