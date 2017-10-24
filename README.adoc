@@ -64,7 +64,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                 <dependency>                                                             <!--2-->
                     <groupId>org.jqassistant.contrib.plugin</groupId>
                     <artifactId>jqassistant-test-impact-analysis-plugin</artifactId>
-                    <version>1.0.0-RC2</version>
+                    <version>1.0.0</version>
                 </dependency>
             </dependencies>
         </plugin>
