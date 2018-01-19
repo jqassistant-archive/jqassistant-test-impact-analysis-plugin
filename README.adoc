@@ -393,7 +393,7 @@ Please report any issues https://github.com/jqassistant-contrib/jqassistant-test
 
 == Acknowledgements
 
-The plugin could not provide its functionality without the support of the following projects:
+The plugin could not provide its functionality without the support of the following open source projects:
 
 * https://jqassistant.org[jQAssistant]
 * https://github.com/kontext-e/jqassistant-plugins[Git Plugin for jQAssistant]
