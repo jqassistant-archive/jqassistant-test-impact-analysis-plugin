@@ -3,10 +3,7 @@ package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.core.IsCollectionContaining;
-import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleTest;
-import org.junit.Assert;
+import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleIT;
 import org.junit.Test;
 
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
@@ -20,7 +17,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
-public class GitBaseCommitTest extends AbstractGitRuleTest {
+public class GitBaseCommitIT extends AbstractGitRuleIT {
 
     private static final String CONCEPT = "test-impact-analysis:GitBaseCommit";
 

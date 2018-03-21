@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.Map;
 
-import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleTest;
+import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleIT;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherTypeTest;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.TypeTest;
 
@@ -18,10 +18,10 @@ import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
 import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 
-abstract class AbstractTestImpactAnalysisRuleTest extends AbstractGitRuleTest {
+abstract class AbstractTestImpactAnalysisRuleIT extends AbstractGitRuleIT {
 
     protected void verify(Class<?> changedType, String concept, Map<String, String> parameters) throws Exception {
-        scanClassPathDirectory("a1", getClassesDirectory(TestsAffectedByCurrentGitBranchTest.class));
+        scanClassPathDirectory("a1", getClassesDirectory(TestsAffectedByCurrentGitBranchIT.class));
 
         Result<Concept> result = applyConcept(concept, parameters);
 
@@ -40,7 +40,7 @@ abstract class AbstractTestImpactAnalysisRuleTest extends AbstractGitRuleTest {
         assertThat(store.executeQuery("MATCH (t:Type:Changed) RETURN t").getSingleResult().get("t", TypeDescriptor.class), typeDescriptor(changedType));
         List<TypeDescriptor> affectedTests = store.executeQuery("MATCH (t:Type:Test:Affected) RETURN collect(t) as affectedTests").getSingleResult()
                 .get("affectedTests", List.class);
-        assertThat(affectedTests, hasItems(typeDescriptor(TypeTest.class), typeDescriptor(TestsAffectedByCurrentGitBranchTest.class)));
+        assertThat(affectedTests, hasItems(typeDescriptor(TypeTest.class), typeDescriptor(TestsAffectedByCurrentGitBranchIT.class)));
         store.commitTransaction();
     }
 

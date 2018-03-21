@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleTest;
+import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleIT;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.Type;
 import org.junit.Test;
@@ -20,13 +20,13 @@ import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
 
-public class NoTestsAffectedInSameGitBranch extends AbstractGitRuleTest {
+public class NoTestsAffectedInSameGitBranchIT extends AbstractGitRuleIT {
 
     private static final String CONCEPT = "test-impact-analysis:TestsAffectedByCurrentGitBranch";
 
     @Test
     public void noTestsAffectedInSameGitBranch() throws Exception {
-        scanClassPathDirectory("a1", getClassesDirectory(TestsAffectedByCurrentGitBranchTest.class));
+        scanClassPathDirectory("a1", getClassesDirectory(NoTestsAffectedInSameGitBranchIT.class));
         createGitHistory(Type.class);
 
         Result<Concept> result = applyConcept(CONCEPT, Collections.<String, String> emptyMap());

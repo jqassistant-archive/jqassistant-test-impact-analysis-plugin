@@ -21,7 +21,7 @@ import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
 
-public class FilesChangedByCommitsInCurrentGitBranchTest extends AbstractTestImpactAnalysisRuleTest {
+public class FilesChangedByCommitsInCurrentGitBranchIT extends AbstractTestImpactAnalysisRuleIT {
 
     private static final String CONCEPT = "test-impact-analysis:FilesChangedByCommitsInCurrentGitBranch";
 

@@ -8,7 +8,7 @@ import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
 
-public class TestGapForLastGitCommitTest extends AbstractTestGapTest {
+public class TestGapForLastGitCommitIT extends AbstractTestGapIT {
 
     @Test
     public void gapForLastCommit() throws Exception {

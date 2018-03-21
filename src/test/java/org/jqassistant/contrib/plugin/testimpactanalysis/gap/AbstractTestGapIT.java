@@ -9,9 +9,9 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.Map;
 
-import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleTest;
+import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleIT;
 import org.jqassistant.contrib.plugin.testimpactanalysis.gap.set.Type;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.TestsAffectedByCurrentGitBranchTest;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.TestsAffectedByCurrentGitBranchIT;
 
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
@@ -19,10 +19,10 @@ import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.MethodDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 
-public abstract class AbstractTestGapTest extends AbstractGitRuleTest {
+public abstract class AbstractTestGapIT extends AbstractGitRuleIT {
 
     public void verify(String constraint, Map<String, String> constraintParameters) throws Exception {
-        scanClassPathDirectory("a1", getClassesDirectory(TestsAffectedByCurrentGitBranchTest.class));
+        scanClassPathDirectory("a1", getClassesDirectory(TestsAffectedByCurrentGitBranchIT.class));
         createGitHistory(Type.class);
 
         Result<Constraint> result = validateConstraint(constraint, constraintParameters);
