@@ -2,8 +2,9 @@ package org.jqassistant.contrib.plugin.testimpactanalysis.report;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jqassistant.contrib.plugin.testimpactanalysis.SurefireSuiteReportPlugin.REPORT_ID;
+import static org.jqassistant.contrib.plugin.testimpactanalysis.SurefireSuiteReportPlugin.REPORT_TYPE;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.*;
 
+import com.buschmais.jqassistant.core.report.api.ReportContext;
 import org.apache.commons.io.FileUtils;
 import org.jqassistant.contrib.plugin.testimpactanalysis.SurefireSuiteReportPlugin;
 import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact1Test2;
@@ -21,6 +23,7 @@ import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact1Tes
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.buschmais.jqassistant.core.analysis.api.Result;
@@ -38,9 +41,13 @@ public class SurefireSuiteReportPluginTest {
 
     private SurefireSuiteReportPlugin plugin = new SurefireSuiteReportPlugin();
 
+    @Mock
+    private ReportContext reportContext;
+
     @Before
     public void init() throws IOException {
         FileUtils.deleteDirectory(REPORT_DIRECTORY);
+        doReturn(REPORT_DIRECTORY).when(reportContext).getReportDirectory(SurefireSuiteReportPlugin.REPORT_TYPE);
     }
 
     @Test
@@ -49,7 +56,7 @@ public class SurefireSuiteReportPluginTest {
         rows.add(createRow("Artifact", "artifact1", "Tests", Artifact1Test1.class, Artifact1Test2.class));
         rows.add(createRow("Artifact", "artifact2", "Tests", Artifact2Test1.class));
         Result<? extends ExecutableRule> result = getResult(rows, new Properties());
-        plugin.configure(getConfiguration());
+        plugin.configure(reportContext, getConfiguration());
 
         plugin.setResult(result);
 
@@ -68,7 +75,7 @@ public class SurefireSuiteReportPluginTest {
         rows.add(createRow("Artifact", "artifact", "Tests", Artifact1Test1.class));
         rows.add(createRow("Artifact", "artifact", "Tests", Artifact1Test2.class));
         Result<? extends ExecutableRule> result = getResult(rows, new Properties());
-        plugin.configure(getConfiguration());
+        plugin.configure(reportContext, getConfiguration());
 
         plugin.setResult(result);
 
@@ -87,7 +94,7 @@ public class SurefireSuiteReportPluginTest {
         Map<String, Object> configuration = getConfiguration();
         configuration.put("testImpactAnalysis.surefire.artifactColumn", "a");
         configuration.put("testImpactAnalysis.surefire.testsColumn", "t");
-        plugin.configure(configuration);
+        plugin.configure(reportContext, configuration);
 
         plugin.setResult(result);
 
@@ -101,7 +108,7 @@ public class SurefireSuiteReportPluginTest {
         List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(createRow(null, null, "Tests", Artifact1Test1.class, Artifact1Test2.class, Artifact2Test1.class));
         Result<? extends ExecutableRule> result = getResult(rows, new Properties());
-        plugin.configure(getConfiguration());
+        plugin.configure(reportContext, getConfiguration());
 
         plugin.setResult(result);
 
@@ -121,7 +128,7 @@ public class SurefireSuiteReportPluginTest {
         Result<? extends ExecutableRule> result = getResult(rows, reportProperties);
         Map<String, Object> configuration = getConfiguration();
         configuration.put("testImpactAnalysis.surefire.file", "tests");
-        plugin.configure(configuration);
+        plugin.configure(reportContext, configuration);
 
         plugin.setResult(result);
 
@@ -157,7 +164,7 @@ public class SurefireSuiteReportPluginTest {
 
         Report report = mock(Report.class);
         when(concept.getReport()).thenReturn(report);
-        when(report.getSelectedTypes()).thenReturn(new HashSet<>(asList(REPORT_ID)));
+        when(report.getSelectedTypes()).thenReturn(new HashSet<>(asList(REPORT_TYPE)));
         when(report.getProperties()).thenReturn(reportProperties);
 
         when(result.getRows()).thenReturn(rows);
