@@ -9,7 +9,7 @@
 
     <groupId>org.jqassistant.contrib.plugin</groupId>
     <artifactId>jqassistant-test-impact-analysis-plugin</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
 
     <name>jQAssistant Test Impact Analysis Plugin</name>
     <description>The jQAssistant plugin for test impact analysis creates test suites for Maven based on changes in the version control system.</description>
