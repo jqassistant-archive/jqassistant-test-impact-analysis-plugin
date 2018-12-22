@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.jqassistant.contrib.common</groupId>
         <artifactId>parent</artifactId>
-        <version>1.2.1</version>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.jqassistant.contrib.plugin</groupId>
     <artifactId>jqassistant-test-impact-analysis-plugin</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <name>jQAssistant Test Impact Analysis Plugin</name>
     <description>The jQAssistant plugin for test impact analysis creates test suites for Maven based on changes in the version control system.</description>
@@ -33,19 +33,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencyManagement>
         <dependencies>
@@ -89,7 +76,7 @@
         <dependency>
             <groupId>de.kontext-e.jqassistant.plugin</groupId>
             <artifactId>jqassistant.plugin.git</artifactId>
-            <version>1.4.1</version>
+            <version>1.6.1</version>
         </dependency>
         <!-- unit tests -->
         <dependency>
