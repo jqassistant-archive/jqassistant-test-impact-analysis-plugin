@@ -1,15 +1,14 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.impact.set;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OtherTypeTest {
 
     @Test
     public void otherTypeTest() {
-        assertThat(new OtherType(), notNullValue());
+        assertThat(new OtherType()).isNotNull();
     }
 
 }

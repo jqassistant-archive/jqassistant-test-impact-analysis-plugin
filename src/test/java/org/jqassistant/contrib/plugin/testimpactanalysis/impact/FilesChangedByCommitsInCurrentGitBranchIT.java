@@ -1,25 +1,21 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import com.buschmais.jqassistant.core.analysis.api.Result;
+import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
+import org.assertj.core.api.Assertions;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherType;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.Type;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.Type;
-import org.junit.Test;
-
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
-
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
+import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FilesChangedByCommitsInCurrentGitBranchIT extends AbstractTestImpactAnalysisRuleIT {
 
@@ -32,7 +28,7 @@ public class FilesChangedByCommitsInCurrentGitBranchIT extends AbstractTestImpac
 
     @Test
     public void baseBranchOneCommitAhead() {
-        createGitHistory(Type.class, 1 );
+        createGitHistory(Type.class, 1);
     }
 
     private void verify(int developOffset) throws Exception {
@@ -42,16 +38,16 @@ public class FilesChangedByCommitsInCurrentGitBranchIT extends AbstractTestImpac
 
         Result<Concept> result = applyConcept(CONCEPT, parameters);
 
-        assertThat(result.getStatus(), equalTo(SUCCESS));
+        assertThat(result.getStatus()).isEqualTo(SUCCESS);
         List<Map<String, Object>> rows = result.getRows();
-        assertThat(rows.size(), equalTo(1));
+        assertThat(rows.size()).isEqualTo(1);
         Map<String, Object> row = rows.get(0);
         GitCommitDescriptor commit = (GitCommitDescriptor) row.get("Commit");
-        assertThat(commit, notNullValue());
+        assertThat(commit).isNotNull();
         List<String> filesChangedByCommit = (List<String>) row.get("FilesChangedByCommit");
-        assertThat(filesChangedByCommit.size(), equalTo(1));
+        assertThat(filesChangedByCommit.size()).isEqualTo(1);
         String file = filesChangedByCommit.get(0);
-        assertThat(file, endsWith(getSourceFileName(Type.class)));
+        assertThat(file).endsWith(getSourceFileName(Type.class));
     }
 
     private void createGitHistory(Class<?> changedType, int developOffset) {

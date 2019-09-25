@@ -1,12 +1,11 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.gap;
 
-import java.util.HashMap;
-
-import org.junit.Test;
-
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
 
 public class TestGapForCurrentGitBranchIT extends AbstractTestGapIT {
 

@@ -1,23 +1,23 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.gap;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
-import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescriptorMatcher.methodDescriptor;
-import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-import java.util.Map;
-
-import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleIT;
-import org.jqassistant.contrib.plugin.testimpactanalysis.gap.set.Type;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.TestsAffectedByCurrentGitBranchIT;
-
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
 import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.MethodDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
+import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleIT;
+import org.jqassistant.contrib.plugin.testimpactanalysis.gap.set.Type;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.TestsAffectedByCurrentGitBranchIT;
+
+import java.util.List;
+import java.util.Map;
+
+import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
+import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescriptorMatcher.methodDescriptor;
+import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class AbstractTestGapIT extends AbstractGitRuleIT {
 
@@ -27,19 +27,19 @@ public abstract class AbstractTestGapIT extends AbstractGitRuleIT {
 
         Result<Constraint> result = validateConstraint(constraint, constraintParameters);
 
-        assertThat(result.getStatus(), equalTo(FAILURE));
+        assertThat(result.getStatus()).isEqualTo(FAILURE);
         List<Map<String, Object>> rows = result.getRows();
-        assertThat(rows.size(), equalTo(1));
+        assertThat(rows.size()).isEqualTo(1);
         Map<String, Object> row = rows.get(0);
         store.beginTransaction();
         ArtifactDescriptor artifact = (ArtifactDescriptor) row.get("Artifact");
-        assertThat(artifact, notNullValue());
-        assertThat(artifact.getFullQualifiedName(), equalTo("a1"));
+        assertThat(artifact).isNotNull();
+        assertThat(artifact.getFullQualifiedName()).isEqualTo("a1");
         TypeDescriptor type = (TypeDescriptor) row.get("Type");
-        assertThat(type, notNullValue());
+        assertThat(type).isNotNull();
         assertThat(type, typeDescriptor(Type.class));
         List<MethodDescriptor> methods = (List<MethodDescriptor>) row.get("Methods");
-        assertThat(methods.size(), equalTo(1));
+        assertThat(methods.size()).isEqualTo(1);
         assertThat(methods, hasItem(methodDescriptor(Type.class, "nonCoveredPublic")));
         store.commitTransaction();
 

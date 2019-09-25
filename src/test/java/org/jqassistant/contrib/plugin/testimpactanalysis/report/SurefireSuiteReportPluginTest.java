@@ -1,12 +1,25 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.report;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jqassistant.contrib.plugin.testimpactanalysis.SurefireSuiteReportPlugin.REPORT_TYPE;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.buschmais.jqassistant.core.analysis.api.Result;
+import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
+import com.buschmais.jqassistant.core.analysis.api.rule.ExecutableRule;
+import com.buschmais.jqassistant.core.analysis.api.rule.Report;
+import com.buschmais.jqassistant.core.report.api.ReportContext;
+import com.buschmais.jqassistant.core.report.api.ReportException;
+import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
+import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
+import org.apache.commons.io.FileUtils;
+import org.jqassistant.contrib.plugin.testimpactanalysis.SurefireSuiteReportPlugin;
+import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact1Test1;
+import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact1Test2;
+import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact2Test1;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.io.File;
 import java.io.FileReader;
@@ -14,27 +27,13 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.*;
 
-import com.buschmais.jqassistant.core.report.api.ReportContext;
-import org.apache.commons.io.FileUtils;
-import org.jqassistant.contrib.plugin.testimpactanalysis.SurefireSuiteReportPlugin;
-import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact1Test2;
-import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact2Test1;
-import org.jqassistant.contrib.plugin.testimpactanalysis.report.set.Artifact1Test1;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.jqassistant.contrib.plugin.testimpactanalysis.SurefireSuiteReportPlugin.REPORT_TYPE;
+import static org.mockito.Mockito.*;
 
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
-import com.buschmais.jqassistant.core.analysis.api.rule.ExecutableRule;
-import com.buschmais.jqassistant.core.analysis.api.rule.Report;
-import com.buschmais.jqassistant.core.report.api.ReportException;
-import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
-import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class SurefireSuiteReportPluginTest {
 
     private static final File REPORT_DIRECTORY = new File("target/testimpactanalysis");
@@ -44,7 +43,7 @@ public class SurefireSuiteReportPluginTest {
     @Mock
     private ReportContext reportContext;
 
-    @Before
+    @BeforeEach
     public void init() throws IOException {
         FileUtils.deleteDirectory(REPORT_DIRECTORY);
         doReturn(REPORT_DIRECTORY).when(reportContext).getReportDirectory(SurefireSuiteReportPlugin.REPORT_TYPE);
@@ -61,12 +60,12 @@ public class SurefireSuiteReportPluginTest {
         plugin.setResult(result);
 
         List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "artifact1");
-        assertThat(artifact1Testsuite.size(), equalTo(2));
-        assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
-        assertThat(artifact1Testsuite.get(1), equalTo(getExpectedSourceFileName(Artifact1Test2.class)));
+        assertThat(artifact1Testsuite.size()).isEqualTo(2);
+        assertThat(artifact1Testsuite.get(0)).isEqualTo(getExpectedSourceFileName(Artifact1Test1.class));
+        assertThat(artifact1Testsuite.get(1)).isEqualTo(getExpectedSourceFileName(Artifact1Test2.class));
         List<String> artifact2Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "artifact2");
-        assertThat(artifact2Testsuite.size(), equalTo(1));
-        assertThat(artifact2Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact2Test1.class)));
+        assertThat(artifact2Testsuite.size()).isEqualTo(1);
+        assertThat(artifact2Testsuite.get(0)).isEqualTo(getExpectedSourceFileName(Artifact2Test1.class));
     }
 
     @Test
@@ -80,9 +79,9 @@ public class SurefireSuiteReportPluginTest {
         plugin.setResult(result);
 
         List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "artifact");
-        assertThat(artifact1Testsuite.size(), equalTo(2));
-        assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
-        assertThat(artifact1Testsuite.get(1), equalTo(getExpectedSourceFileName(Artifact1Test2.class)));
+        assertThat(artifact1Testsuite.size()).isEqualTo(2);
+        assertThat(artifact1Testsuite.get(0)).isEqualTo(getExpectedSourceFileName(Artifact1Test1.class));
+        assertThat(artifact1Testsuite.get(1)).isEqualTo(getExpectedSourceFileName(Artifact1Test2.class));
     }
 
     @Test
@@ -99,8 +98,8 @@ public class SurefireSuiteReportPluginTest {
         plugin.setResult(result);
 
         List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "artifact");
-        assertThat(artifact1Testsuite.size(), equalTo(1));
-        assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
+        assertThat(artifact1Testsuite.size()).isEqualTo(1);
+        assertThat(artifact1Testsuite.get(0)).isEqualTo(getExpectedSourceFileName(Artifact1Test1.class));
     }
 
     @Test
@@ -113,10 +112,10 @@ public class SurefireSuiteReportPluginTest {
         plugin.setResult(result);
 
         List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "surefire-tests");
-        assertThat(artifact1Testsuite.size(), equalTo(3));
-        assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
-        assertThat(artifact1Testsuite.get(1), equalTo(getExpectedSourceFileName(Artifact1Test2.class)));
-        assertThat(artifact1Testsuite.get(2), equalTo(getExpectedSourceFileName(Artifact2Test1.class)));
+        assertThat(artifact1Testsuite.size()).isEqualTo(3);
+        assertThat(artifact1Testsuite.get(0)).isEqualTo(getExpectedSourceFileName(Artifact1Test1.class));
+        assertThat(artifact1Testsuite.get(1)).isEqualTo(getExpectedSourceFileName(Artifact1Test2.class));
+        assertThat(artifact1Testsuite.get(2)).isEqualTo(getExpectedSourceFileName(Artifact2Test1.class));
     }
 
     @Test
@@ -133,10 +132,10 @@ public class SurefireSuiteReportPluginTest {
         plugin.setResult(result);
 
         List<String> artifact1Testsuite = getTestsuiteReport(REPORT_DIRECTORY, "tests");
-        assertThat(artifact1Testsuite.size(), equalTo(3));
-        assertThat(artifact1Testsuite.get(0), equalTo(getExpectedSourceFileName(Artifact1Test1.class)));
-        assertThat(artifact1Testsuite.get(1), equalTo(getExpectedSourceFileName(Artifact1Test2.class)));
-        assertThat(artifact1Testsuite.get(2), equalTo(getExpectedSourceFileName(Artifact2Test1.class)));
+        assertThat(artifact1Testsuite.size()).isEqualTo(3);
+        assertThat(artifact1Testsuite.get(0)).isEqualTo(getExpectedSourceFileName(Artifact1Test1.class));
+        assertThat(artifact1Testsuite.get(1)).isEqualTo(getExpectedSourceFileName(Artifact1Test2.class));
+        assertThat(artifact1Testsuite.get(2)).isEqualTo(getExpectedSourceFileName(Artifact2Test1.class));
     }
 
     private Map<String, Object> createRow(String artifactColumn, String artifactName, String testsColumn, Class<?>... testClasses) {
@@ -160,7 +159,7 @@ public class SurefireSuiteReportPluginTest {
         Result<? extends ExecutableRule> result = mock(Result.class);
 
         Concept concept = mock(Concept.class);
-        when(result.getRule()).thenReturn(concept);
+        doReturn(concept).when(result).getRule();
 
         Report report = mock(Report.class);
         when(concept.getReport()).thenReturn(report);
@@ -171,7 +170,7 @@ public class SurefireSuiteReportPluginTest {
         return result;
     }
 
-    private Map<String, Object> getConfiguration() throws ReportException {
+    private Map<String, Object> getConfiguration() {
         Map<String, Object> properties = new HashMap<>();
         properties.put("testImpactAnalysis.report.directory", REPORT_DIRECTORY.getAbsolutePath());
         return properties;
@@ -179,7 +178,7 @@ public class SurefireSuiteReportPluginTest {
 
     private List<String> getTestsuiteReport(File reportDirectory, String fileName) throws IOException {
         File testArtifactSuite = new File(reportDirectory, fileName);
-        assertThat(testArtifactSuite.exists(), equalTo(true));
+        assertThat(testArtifactSuite.exists()).isEqualTo(true);
         List<String> testsuite = new ArrayList<>();
         try (LineNumberReader reader = new LineNumberReader(new FileReader(testArtifactSuite))) {
             String line;

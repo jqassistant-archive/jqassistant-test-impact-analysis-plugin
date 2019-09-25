@@ -38,6 +38,7 @@
     <concept id="test-impact-analysis:TestsAffectedByLastGitCommit" severity="info">
         <requiresConcept refId="test-impact-analysis:TypesChangedByLastGitCommit" />
         <requiresConcept refId="junit4:TestClass" />
+        <requiresConcept refId="junit5:TestClass" />
         <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed in the last Git commit.</description>
         <cypher><![CDATA[
             MATCH
@@ -136,6 +137,7 @@
     <concept id="test-impact-analysis:TypesChangedByCurrentGitBranch" severity="info">
         <requiresConcept refId="test-impact-analysis:FilesChangedByCommitsInCurrentGitBranch" />
         <requiresConcept refId="junit4:TestClass" />
+        <requiresConcept refId="junit5:TestClass" />
         <description>Adds a label 'Changed' to Java types that changed in the current branch.</description>
         <cypher><![CDATA[
             MATCH
@@ -158,6 +160,7 @@
     <concept id="test-impact-analysis:TestsAffectedByCurrentGitBranch" severity="info">
         <requiresConcept refId="test-impact-analysis:TypesChangedByCurrentGitBranch" />
         <requiresConcept refId="junit4:TestClass" />
+        <requiresConcept refId="junit5:TestClass" />
         <description>Adds a label 'Affected' to all test classes having a dependency to Java types which were changed by commits in the current Git branch.</description>
         <cypher><![CDATA[
             MATCH
@@ -197,6 +200,7 @@
     <constraint id="test-impact-analysis:TestGapForLastGitCommit">
         <requiresConcept refId="test-impact-analysis:TypesChangedByLastGitCommit" />
         <requiresConcept refId="junit4:TestMethod" />
+        <requiresConcept refId="junit5:TestMethod" />
         <requiresParameter name="testImpactAnalysisGapMethodVisibility" type="String" defaultValue="public"/>
         <description>Public methods of Java types that changed in the last Git commit which are not covered by test methods (experimental).</description>
         <cypher><![CDATA[
@@ -220,6 +224,7 @@
     <constraint id="test-impact-analysis:TestGapForCurrentGitBranch">
         <requiresConcept refId="test-impact-analysis:TypesChangedByCurrentGitBranch" />
         <requiresConcept refId="junit4:TestMethod" />
+        <requiresConcept refId="junit5:TestMethod" />
         <requiresParameter name="testImpactAnalysisGapMethodVisibility" type="String" defaultValue="public"/>
         <description>Public methods of Java types that changed in the current Git branch which are not covered by test methods (experimental).</description>
         <cypher><![CDATA[

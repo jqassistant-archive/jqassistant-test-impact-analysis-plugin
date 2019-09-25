@@ -1,6 +1,6 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.gap.set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TypeTest {
 

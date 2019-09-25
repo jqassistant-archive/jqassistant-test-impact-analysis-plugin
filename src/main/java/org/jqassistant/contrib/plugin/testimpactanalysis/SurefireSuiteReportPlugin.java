@@ -1,5 +1,15 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis;
 
+import com.buschmais.jqassistant.core.analysis.api.Result;
+import com.buschmais.jqassistant.core.analysis.api.rule.ExecutableRule;
+import com.buschmais.jqassistant.core.report.api.ReportContext;
+import com.buschmais.jqassistant.core.report.api.ReportException;
+import com.buschmais.jqassistant.core.report.api.ReportPlugin;
+import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
+import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,23 +18,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.ExecutableRule;
-import com.buschmais.jqassistant.core.report.api.AbstractReportPlugin;
-import com.buschmais.jqassistant.core.report.api.ReportContext;
-import com.buschmais.jqassistant.core.report.api.ReportException;
-import com.buschmais.jqassistant.core.report.api.ReportPlugin;
-import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
-import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A {@link ReportPlugin} that creates files containing source file names of
  * test classes for execution using Maven Surefire Plugin.
  */
-public class SurefireSuiteReportPlugin extends AbstractReportPlugin {
+public class SurefireSuiteReportPlugin implements ReportPlugin {
 
     public static final String REPORT_TYPE = "surefire-suite";
     private static final Logger LOGGER = LoggerFactory.getLogger(SurefireSuiteReportPlugin.class);
@@ -82,17 +80,12 @@ public class SurefireSuiteReportPlugin extends AbstractReportPlugin {
     /**
      * Extract the value of a column providing an expected type.
      *
-     * @param row
-     *            The row.
-     * @param name
-     *            The name of the column.
-     * @param expectedType
-     *            The expected type.
-     * @param <T>
-     *            The expected type.
+     * @param row          The row.
+     * @param name         The name of the column.
+     * @param expectedType The expected type.
+     * @param <T>          The expected type.
      * @return The value.
-     * @throws ReportException
-     *             If the value type does not match the expected type.
+     * @throws ReportException If the value type does not match the expected type.
      */
     private <T> T getColumnValue(Map<String, Object> row, String name, Class<T> expectedType) throws ReportException {
         Object value = row.get(name);
@@ -108,8 +101,7 @@ public class SurefireSuiteReportPlugin extends AbstractReportPlugin {
     /**
      * Determines the report file for the given artifact.
      *
-     * @param artifactDescriptor
-     *            The artifact descriptor.
+     * @param artifactDescriptor The artifact descriptor.
      * @return The report file.
      */
     private File getReportFile(ArtifactDescriptor artifactDescriptor) {
@@ -127,15 +119,11 @@ public class SurefireSuiteReportPlugin extends AbstractReportPlugin {
     /**
      * Writes test classes to the given file.
      *
-     * @param file
-     *            The file.
-     * @param append
-     *            If <code>true</code> the test classes will be appended if the file
-     *            already exists.
-     * @param testClasses
-     *            The test classes.
-     * @throws ReportException
-     *             If the file cannot be written.
+     * @param file        The file.
+     * @param append      If <code>true</code> the test classes will be appended if the file
+     *                    already exists.
+     * @param testClasses The test classes.
+     * @throws ReportException If the file cannot be written.
      */
     private void writeTests(File file, boolean append, Iterable<ClassTypeDescriptor> testClasses) throws ReportException {
         LOGGER.info((append ? "Appending" : "Writing") + " tests to '" + file.getPath() + "'.");

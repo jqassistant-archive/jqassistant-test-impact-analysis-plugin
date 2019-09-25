@@ -1,12 +1,11 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.gap;
 
-import java.util.Collections;
-
-import org.junit.Test;
-
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
 
 public class TestGapForLastGitCommitIT extends AbstractTestGapIT {
 

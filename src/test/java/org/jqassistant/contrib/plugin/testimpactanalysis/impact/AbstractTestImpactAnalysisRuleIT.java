@@ -1,22 +1,22 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
-import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-import java.util.Map;
-
-import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleIT;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherTypeTest;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.TypeTest;
-
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
 import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
+import org.hamcrest.MatcherAssert;
+import org.jqassistant.contrib.plugin.testimpactanalysis.AbstractGitRuleIT;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherTypeTest;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.TypeTest;
+
+import java.util.List;
+import java.util.Map;
+
+import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
+import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 
 abstract class AbstractTestImpactAnalysisRuleIT extends AbstractGitRuleIT {
 
@@ -25,22 +25,22 @@ abstract class AbstractTestImpactAnalysisRuleIT extends AbstractGitRuleIT {
 
         Result<Concept> result = applyConcept(concept, parameters);
 
-        assertThat(result.getStatus(), equalTo(SUCCESS));
+        assertThat(result.getStatus()).isEqualTo(SUCCESS);
         List<Map<String, Object>> rows = result.getRows();
-        assertThat(rows.size(), equalTo(1));
+        assertThat(rows.size()).isEqualTo(1);
         Map<String, Object> row = rows.get(0);
         store.beginTransaction();
         ArtifactDescriptor artifact = (ArtifactDescriptor) row.get("Artifact");
-        assertThat(artifact, notNullValue());
-        assertThat(artifact.getFullQualifiedName(), equalTo("a1"));
+        assertThat(artifact).isNotNull();
+        assertThat(artifact.getFullQualifiedName()).isEqualTo("a1");
         List<TypeDescriptor> tests = (List<TypeDescriptor>) row.get("Tests");
-        assertThat(tests, notNullValue());
-        assertThat(tests, hasItems(typeDescriptor(TypeTest.class)));
-        assertThat(tests, not(hasItems(typeDescriptor(OtherTypeTest.class))));
-        assertThat(store.executeQuery("MATCH (t:Type:Changed) RETURN t").getSingleResult().get("t", TypeDescriptor.class), typeDescriptor(changedType));
+        assertThat(tests).isNotNull();
+        MatcherAssert.assertThat(tests, hasItems(typeDescriptor(TypeTest.class)));
+        MatcherAssert.assertThat(tests, not(hasItems(typeDescriptor(OtherTypeTest.class))));
+        MatcherAssert.assertThat(store.executeQuery("MATCH (t:Type:Changed) RETURN t").getSingleResult().get("t", TypeDescriptor.class), typeDescriptor(changedType));
         List<TypeDescriptor> affectedTests = store.executeQuery("MATCH (t:Type:Test:Affected) RETURN collect(t) as affectedTests").getSingleResult()
-                .get("affectedTests", List.class);
-        assertThat(affectedTests, hasItems(typeDescriptor(TypeTest.class), typeDescriptor(TestsAffectedByCurrentGitBranchIT.class)));
+            .get("affectedTests", List.class);
+        MatcherAssert.assertThat(affectedTests, hasItems(typeDescriptor(TypeTest.class), typeDescriptor(TestsAffectedByCurrentGitBranchIT.class)));
         store.commitTransaction();
     }
 

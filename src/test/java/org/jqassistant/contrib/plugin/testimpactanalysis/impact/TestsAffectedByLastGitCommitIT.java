@@ -1,16 +1,15 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 
-import java.util.Collections;
-
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SubType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SuperType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.Type;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
+import java.util.Collections;
 
 public class TestsAffectedByLastGitCommitIT extends AbstractTestImpactAnalysisRuleIT {
 
@@ -19,19 +18,19 @@ public class TestsAffectedByLastGitCommitIT extends AbstractTestImpactAnalysisRu
     @Test
     public void typeChanged() throws Exception {
         createGitHistory(Type.class);
-        verify(Type.class, CONCEPT, Collections.<String, String> emptyMap());
+        verify(Type.class, CONCEPT, Collections.emptyMap());
     }
 
     @Test
     public void subTypeChanged() throws Exception {
         createGitHistory(SubType.class);
-        verify(SubType.class, CONCEPT, Collections.<String, String> emptyMap());
+        verify(SubType.class, CONCEPT, Collections.emptyMap());
     }
 
     @Test
     public void superTypeChanged() throws Exception {
         createGitHistory(SuperType.class);
-        verify(SuperType.class, CONCEPT, Collections.<String, String> emptyMap());
+        verify(SuperType.class, CONCEPT, Collections.emptyMap());
     }
 
     private void createGitHistory(Class<?> changedType) {

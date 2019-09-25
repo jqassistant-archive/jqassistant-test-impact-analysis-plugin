@@ -1,17 +1,16 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SubType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SuperType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.Type;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestsAffectedByCurrentGitBranchIT extends AbstractTestImpactAnalysisRuleIT {
 
