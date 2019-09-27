@@ -21,7 +21,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 abstract class AbstractTestImpactAnalysisRuleIT extends AbstractGitRuleIT {
 
     protected void verify(Class<?> changedType, String concept, Map<String, String> parameters) throws Exception {
-        scanClassPathDirectory("a1", getClassesDirectory(TestsAffectedByCurrentGitBranchIT.class));
+        scanClassPathDirectory("a1", getClassesDirectory(AbstractTestImpactAnalysisRuleIT.class));
 
         Result<Concept> result = applyConcept(concept, parameters);
 

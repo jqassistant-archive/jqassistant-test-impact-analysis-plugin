@@ -3,10 +3,7 @@ package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SubType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.SuperType;
-import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.Type;
+import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -31,6 +28,24 @@ public class TestsAffectedByLastGitCommitIT extends AbstractTestImpactAnalysisRu
     public void superTypeChanged() throws Exception {
         createGitHistory(SuperType.class);
         verify(SuperType.class, CONCEPT, Collections.emptyMap());
+    }
+
+    @Test
+    public void transitiveTypeChanged() throws Exception {
+        createGitHistory(TransitiveType.class);
+        verify(TransitiveType.class, CONCEPT, Collections.emptyMap());
+    }
+
+    @Test
+    public void transitiveSubTypeChanged() throws Exception {
+        createGitHistory(TransitiveSubType.class);
+        verify(TransitiveSubType.class, CONCEPT, Collections.emptyMap());
+    }
+
+    @Test
+    public void transitiveSuperTypeChanged() throws Exception {
+        createGitHistory(TransitiveSuperType.class);
+        verify(TransitiveSuperType.class, CONCEPT, Collections.emptyMap());
     }
 
     private void createGitHistory(Class<?> changedType) {
