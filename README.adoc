@@ -355,38 +355,6 @@ The Surefire Report plugin accepts several options that might be passed as `repo
 NOTE: The properties specifying the `artifactColumn` and `testColumn` must reflect the columns used in the `RETURN` clause of the query,
 e.g. by default 'RETURN artifact as Artifact, collect(test) as Tests'.
 
-== Limitations
-
-At the moment only test classes are detected having a direct dependency to
-
-* a changed type
-* any super type of a changed type (e.g. interfaces, super classes, etc.)
-* any derived class of a changed type
-
-Evaluation of transitive relations is considered for a future release.
-
-== Known Problems
-
-1. The following error may occur while creating a branch test suite:
-
-----
-Analysis failed.: Cannot execute query for rule 'Concept{id='test-impact-analysis:ChangeCommitsInCurrentGitBranch', description='Adds a label 'Change' to all commits in the current Git branch which are not included in the base branch.', ruleSource=META-INF/jqassistant-rules/test-impact-analysis.xml}'. All parts of the pattern must either directly or indirectly be connected to at least one bound entity. These identifiers were found to be disconnected:   UNNAMED322, baseBranch, baseHead -> [Help 1]
-----
-
-The problem is caused by the `shortestPath` function in Neo4j v2 and can be solved by switching jQAssistant to use Neo4j v3:
-
-----
-mvn clean verify -Pcreate-branch-testsuite -Djqassistant.neo4jVersion=3
-----
-
-For convenience this setting can be stored in a file in the top level module of the Maven project:
-
-.+++.mvn/maven.config+++
-[source]
-----
--Djqassistant.neo4jVersion=3
-----
-
 [[feedback]]
 == Feedback
 
