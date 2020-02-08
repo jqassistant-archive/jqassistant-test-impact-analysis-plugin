@@ -1,11 +1,10 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
+import com.buschmais.jqassistant.core.report.api.model.Result;
+import com.buschmais.jqassistant.core.rule.api.model.Concept;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
-import org.assertj.core.api.Assertions;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.OtherType;
 import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.Type;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
+import static com.buschmais.jqassistant.core.report.api.model.Result.Status.SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FilesChangedByCommitsInCurrentGitBranchIT extends AbstractTestImpactAnalysisRuleIT {

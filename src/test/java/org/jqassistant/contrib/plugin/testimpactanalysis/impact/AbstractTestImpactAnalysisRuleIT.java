@@ -1,7 +1,7 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
+import com.buschmais.jqassistant.core.report.api.model.Result;
+import com.buschmais.jqassistant.core.rule.api.model.Concept;
 import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import org.hamcrest.MatcherAssert;
@@ -12,7 +12,7 @@ import org.jqassistant.contrib.plugin.testimpactanalysis.impact.set.TypeTest;
 import java.util.List;
 import java.util.Map;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
+import static com.buschmais.jqassistant.core.report.api.model.Result.Status.SUCCESS;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.not;

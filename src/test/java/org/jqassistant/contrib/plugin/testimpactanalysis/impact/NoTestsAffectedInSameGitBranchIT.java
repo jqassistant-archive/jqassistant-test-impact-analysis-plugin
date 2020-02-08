@@ -1,7 +1,7 @@
 package org.jqassistant.contrib.plugin.testimpactanalysis.impact;
 
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
+import com.buschmais.jqassistant.core.report.api.model.Result;
+import com.buschmais.jqassistant.core.rule.api.model.Concept;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitBranchDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitRepositoryDescriptor;
@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
+import static com.buschmais.jqassistant.core.report.api.model.Result.Status.FAILURE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NoTestsAffectedInSameGitBranchIT extends AbstractGitRuleIT {
