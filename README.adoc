@@ -1,6 +1,8 @@
 :toc:
 = jQAssistant Test Impact Analysis Plugin
 
+NOTE:: This project has been archived and is no longer actively developed. Please refer to the existing releases and documentation.
+
 The project provides a http://jqassistant.org/[jQAssistant] plugin for generating test suites based on changes in the version control system (i.e. Git).
 This allows to *selectively run expensive tests* to provide fast feedback.
 Furthermore an experimental feature identifies potential *test gap*, i.e. changed or added Java classes without unit tests.
